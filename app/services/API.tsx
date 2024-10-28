@@ -15,9 +15,10 @@ const axiosInstance = axios.create({
 });
 
 const API = {
-  getFamilies: () => axiosInstance.get("/families"),
+  getFamilies: () => axiosInstance.get("/families?populate=*"),
   getOneFamily: (id: number) => axiosInstance.get(`/families/${id}`),
   createFamily: (family: object) => axiosInstance.post("/families", family),
+  getUsers: () => axiosInstance.get("/user-lists"),
   //   getCalendmy: () =>
   //     axiosInstance.get(
   //       `/calend-mies?populate[0]=events,shopping_lists,to_do&populate[1]=shopping_lists.list_items,to_do.todo_items`

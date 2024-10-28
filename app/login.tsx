@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import Colors from "@/constants/Colors";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
@@ -14,11 +14,11 @@ export default function login() {
     try {
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow({
-          redirectUrl: Linking.createURL("/dashboard", { scheme: "myapp" }),
+          redirectUrl: Linking.createURL("/createFamily", { scheme: "myapp" }),
         });
 
       if (createdSessionId) {
-        // setActive!({ session: createdSessionId });
+        setActive!({ session: createdSessionId });
       } else {
         // Use signIn or signUp for next steps such as MFA
       }

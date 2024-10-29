@@ -1,5 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect } from "react";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import Colors from "@/constants/Colors";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
@@ -7,7 +9,11 @@ import { useClerk, useOAuth } from "@clerk/clerk-expo";
 
 export default function login() {
   useWarmUpBrowser();
-
+  const [loaded, error] = useFonts({
+    Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
+    BowlbyOne: require("../assets/fonts/BowlbyOneSC-Regular.ttf"),
+    Overlock: require("../assets/fonts/Overlock-Regular.ttf"),
+  });
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
   const { signOut } = useClerk();
 
@@ -28,9 +34,23 @@ export default function login() {
       console.error("OAuth error", err);
     }
   }, []);
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
 
   return (
-    <View style={{ backgroundColor: "white", height: "100%" }}>
+    <View
+      style={{
+        height: "100%",
+        backgroundColor: Colors.bronze1,
+      }}
+    >
       <Image
         source={require("./../assets/images/family.jpg")}
         style={{ width: "100%", height: 600 }}
@@ -41,15 +61,16 @@ export default function login() {
           marginTop: -20,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
-          backgroundColor: "white",
+          backgroundColor: Colors.bronze1,
         }}
       >
         <Text
           style={{
             marginTop: 20,
-            fontSize: 28,
+            fontSize: 30,
             textAlign: "center",
-            fontWeight: "bold",
+            color: Colors.bronze11,
+            fontFamily: "Amatic",
           }}
         >
           Welcome to Familink
@@ -57,19 +78,25 @@ export default function login() {
         <TouchableOpacity style={{ marginTop: 20 }} onPress={onPress}>
           <Text
             style={{
-              color: Colors.bronze11,
+              color: Colors.bronze12,
               textAlign: "center",
               padding: 10,
               borderRadius: 50,
               fontSize: 17,
-              backgroundColor: Colors.bronze2,
+              fontFamily: "BowlbyOne",
+              backgroundColor: Colors.bronze10,
             }}
           >
             Continue
           </Text>
         </TouchableOpacity>
         <Text
-          style={{ textAlign: "center", marginTop: 20, color: Colors.bronze11 }}
+          style={{
+            textAlign: "center",
+            marginTop: 20,
+            color: Colors.bronze11,
+            fontFamily: "Overlock",
+          }}
         >
           By continuing you agree to ours terms and conditions
         </Text>

@@ -12,6 +12,8 @@ import API from "./services/API";
 import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
 import { useRouter, Redirect } from "expo-router";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
 const CreateFamily = () => {
   interface Family {
@@ -56,6 +58,22 @@ const CreateFamily = () => {
       }
     }, 1000);
   }, [families, users, user]);
+
+  const [loaded, error] = useFonts({
+    Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
+    BowlbyOne: require("../assets/fonts/BowlbyOneSC-Regular.ttf"),
+    Overlock: require("../assets/fonts/Overlock-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
 
   const handleCreateFamily = async () => {
     try {
@@ -139,6 +157,7 @@ const CreateFamily = () => {
             textAlign: "center",
             fontSize: 20,
             margin: 40,
+            fontFamily: "Overlock",
           }}
         >
           ou
@@ -235,18 +254,20 @@ const styles = StyleSheet.create({
     width: "80%",
     height: 60,
     marginHorizontal: "auto",
+    justifyContent: "center",
     borderRadius: 50,
     padding: 10,
   },
   buttonText: {
     color: Colors.bronze12,
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 16,
+    fontFamily: "BowlbyOne",
   },
   modalView: {
     margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
@@ -265,6 +286,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+    fontFamily: "BowlbyOne",
     fontSize: 20,
   },
   input: {
@@ -273,6 +295,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
+    fontFamily: "Overlock",
     width: "100%",
   },
   submitButton: {

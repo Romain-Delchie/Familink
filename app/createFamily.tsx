@@ -1,7 +1,8 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import API from "./services/API";
 import { useUser } from "@clerk/clerk-expo";
+import Colors from "@/constants/Colors";
 
 const createFamily = () => {
   interface Family {
@@ -34,16 +35,22 @@ const createFamily = () => {
           setIsKnown("yes");
         }
       });
-    if (isKnown === "waiting") {
-      setIsKnown("no");
-    }
+    // if (isKnown === "waiting") {
+    //   setIsKnown("no");
+    // }
     // console.log(families);
     // console.log(users);
     // console.log(user);
   }, [families, users, user]);
 
   if (isKnown === "waiting") {
-    return <Text>Loading user...</Text>;
+    return (
+      <ActivityIndicator
+        style={{ margin: "auto" }}
+        size={50}
+        color={Colors.bronze11}
+      />
+    );
   }
 
   if (isKnown === "no") {

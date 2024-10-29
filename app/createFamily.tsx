@@ -50,9 +50,11 @@ const CreateFamily = () => {
           oneUser.profile !== "asker" ? setIsKnown("yes") : setIsKnown("asker");
         }
       });
-    if (isKnown === "waiting") {
-      setIsKnown("no");
-    }
+    setTimeout(() => {
+      if (isKnown === "waiting") {
+        setIsKnown("no");
+      }
+    }, 1000);
   }, [families, users, user]);
 
   const handleCreateFamily = async () => {
@@ -223,7 +225,7 @@ const CreateFamily = () => {
   }
 
   if (isKnown === "asker") {
-    return <Redirect href={"/notAcceptadeYet"} />;
+    return <Redirect href={"/notAcceptedYet"} />;
   }
 };
 

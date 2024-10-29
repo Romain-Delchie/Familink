@@ -7,15 +7,16 @@ export default function Index() {
 
   return (
     <View>
+      <Redirect href={"/notAcceptedYet"} />
       {/* <Redirect href={"/createFamily"} /> */}
-      <Redirect href={"/login"} />
-      <View>
+      {/* <Redirect href={"/login"} /> */
+      /* <View>
         {!user ? (
           <Redirect href={"/login"} />
         ) : (
           <Redirect href={"/createFamily"} />
         )}
-      </View>
+      </View> */}
     </View>
   );
 }

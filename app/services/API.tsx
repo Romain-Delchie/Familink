@@ -19,7 +19,13 @@ const API = {
   getFamilies: () => axiosInstance.get("/families?populate=*"),
   getOneFamily: (id: number) => axiosInstance.get(`/families/${id}`),
   createFamily: (family: object) => axiosInstance.post("/families", family),
+  updateFamily: (id: number, family: object) =>
+    axiosInstance.put(`/families/${id}`, family),
   getUsers: () => axiosInstance.get("/user-lists"),
+  getUser: (id: number) => axiosInstance.get(`/user-lists/${id}`),
+  createUser: (user: object) => axiosInstance.post("/user-lists", user),
+  updateUser: (id: number, user: object) =>
+    axiosInstance.put(`/user-lists/${id}`, user),
   //   getCalendmy: () =>
   //     axiosInstance.get(
   //       `/calend-mies?populate[0]=events,shopping_lists,to_do&populate[1]=shopping_lists.list_items,to_do.todo_items`

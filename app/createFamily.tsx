@@ -11,14 +11,14 @@ import React, { useEffect, useState } from "react";
 import API from "./services/API";
 import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
-import { Redirect } from "expo-router";
+import { useRouter, Redirect } from "expo-router";
 
 const CreateFamily = () => {
   interface Family {
     Name: string;
     documentId: string;
   }
-
+  const router = useRouter();
   const [families, setFamilies] = useState<Family[] | null>(null);
   const [users, setUsers] = useState<any[] | null>(null);
   const { isSignedIn, user, isLoaded } = useUser();
@@ -28,6 +28,7 @@ const CreateFamily = () => {
   const [modalVisibleJoin, setModalVisibleJoin] = useState(false);
   const [familyName, setFamilyName] = useState("");
   const [joinFamilyId, setJoinFamilyId] = useState("");
+  const [newUser, setNewUser] = useState(false);
 
   useEffect(() => {
     Promise.all([API.getFamilies(), API.getUsers()])
@@ -53,6 +54,57 @@ const CreateFamily = () => {
       setIsKnown("no");
     }
   }, [families, users, user]);
+
+  const handleCreateFamily = async () => {
+    try {
+      // Crée l'utilisateur (s'il n'existe pas déjà)
+      const userResponse = await API.createUser({
+        data: {
+          firstname: user.firstName,
+          lastname: user.lastName,
+          admin: true,
+          email: user.emailAddresses[0].emailAddress,
+        },
+      });
+      console.log("userResponse", userResponse);
+
+      // Crée la famille
+      const familyResponse = await API.createFamily({
+        data: { name: familyName },
+      });
+
+      const createdUser = userResponse.data.data;
+      const createdFamily = familyResponse.data.data;
+      console.log(createdUser);
+      console.log(createdFamily);
+
+      // Met à jour la famille pour inclure l'utilisateur
+      await API.updateFamily(createdFamily.documentId, {
+        data: {
+          user_list: [createdUser.documentId],
+        },
+      });
+
+      // Met à jour l'utilisateur pour inclure la famille
+      await API.updateUser(createdUser.documentId, {
+        data: {
+          family: [createdFamily.documentId],
+        },
+      });
+
+      // Ferme la modal et réinitialise le champ
+      setModalVisibleCreate(false);
+      setFamilyName("");
+      router.push("/(tab)/home");
+    } catch (error) {
+      console.error(
+        "Erreur lors de la création de la famille et de l'utilisateur:",
+        error
+      );
+    }
+  };
+
+  // render
 
   if (isKnown === "waiting") {
     return (
@@ -114,11 +166,7 @@ const CreateFamily = () => {
             <TouchableOpacity
               style={styles.submitButton}
               onPress={() => {
-                console.log("Famille créée :", familyName);
-                // Logique pour créer la famille
-                API.createFamily({ data: { name: familyName } });
-                setModalVisibleCreate(false);
-                setFamilyName(""); // Réinitialiser le champ
+                handleCreateFamily();
               }}
             >
               <Text style={styles.buttonText}>Créer</Text>

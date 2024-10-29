@@ -25,7 +25,6 @@ const CreateFamily = () => {
   const [users, setUsers] = useState<any[] | null>(null);
   const { isSignedIn, user, isLoaded } = useUser();
   const [isKnown, setIsKnown] = useState("waiting");
-
   const [modalVisibleCreate, setModalVisibleCreate] = useState(false);
   const [modalVisibleJoin, setModalVisibleJoin] = useState(false);
   const [familyName, setFamilyName] = useState("");
@@ -38,6 +37,7 @@ const CreateFamily = () => {
       .then(([familiesRes, usersRes]) => {
         setFamilies(familiesRes.data.data); // Traitement des données des familles
         setUsers(usersRes.data.data); // Traitement des données des utilisateurs
+        console.log("Families:", familiesRes.data.data);
       })
       .catch((err) => {
         console.error("Erreur API:", err);
@@ -83,7 +83,7 @@ const CreateFamily = () => {
         data: {
           firstname: user.firstName,
           lastname: user.lastName,
-          profil: "admin",
+          profile: "admin",
           email: user.emailAddresses[0].emailAddress,
         },
       });
@@ -96,8 +96,6 @@ const CreateFamily = () => {
 
       const createdUser = userResponse.data.data;
       const createdFamily = familyResponse.data.data;
-      console.log(createdUser);
-      console.log(createdFamily);
 
       // Met à jour la famille pour inclure l'utilisateur
       await API.updateFamily(createdFamily.documentId, {
@@ -127,24 +125,27 @@ const CreateFamily = () => {
 
   const handleJoinFamily = async () => {
     // Logique pour rejoindre une famille
-    console.log("Rejoindre la famille avec ID :", joinFamilyId);
+    console.log("Rejoindre la famille avec ID :", typeof joinFamilyId);
+
     try {
       // Crée l'utilisateur (s'il n'existe pas déjà)
       const userResponse = await API.createUser({
         data: {
           firstname: user.firstName,
           lastname: user.lastName,
-          profil: "asker",
+          profile: "asker",
           email: user.emailAddresses[0].emailAddress,
           family: [joinFamilyId],
         },
       });
 
       setModalVisibleJoin(false);
-      setJoinFamilyId(""); // Réinitialiser le champ
+      setJoinFamilyId("");
+      router.push("/notAcceptedYet");
     } catch (error) {
       //Afficher une erreur
       setErrorMessage("Cet identifiant de famille n'existe pas");
+      console.log(error);
     }
   };
 

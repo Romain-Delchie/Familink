@@ -48,8 +48,8 @@ const notAcceptedYet = () => {
           fontFamily: "Amatic",
         }}
       >
-        Votre famille n'a pas encore validé votre compte. Patientez encore un
-        peu.
+        Votre compte doit encore être validé par votre famille pour accéder à
+        l'application.
       </Text>
     </View>
   );

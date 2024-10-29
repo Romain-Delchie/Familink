@@ -47,7 +47,7 @@ const CreateFamily = () => {
       users &&
       users.map((oneUser) => {
         if (oneUser.email === user.emailAddresses[0].emailAddress) {
-          setIsKnown("yes");
+          oneUser.profile !== "asker" ? setIsKnown("yes") : setIsKnown("asker");
         }
       });
     if (isKnown === "waiting") {
@@ -62,7 +62,7 @@ const CreateFamily = () => {
         data: {
           firstname: user.firstName,
           lastname: user.lastName,
-          admin: true,
+          profil: "admin",
           email: user.emailAddresses[0].emailAddress,
         },
       });
@@ -220,6 +220,10 @@ const CreateFamily = () => {
 
   if (isKnown === "yes") {
     return <Redirect href={"/(tab)/home"} />;
+  }
+
+  if (isKnown === "asker") {
+    return <Redirect href={"/notAcceptadeYet"} />;
   }
 };
 

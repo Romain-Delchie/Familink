@@ -18,11 +18,17 @@ const axiosInstance = axios.create({
 const API = {
   getFamilies: () => axiosInstance.get("/families?populate=*"),
   getOneFamily: (id: number) => axiosInstance.get(`/families/${id}`),
+  getOneFamilyByUser: (email: string) =>
+    axiosInstance.get(
+      `/families?populate=*filters[user_list][email][$eq]=${email}&populate=*`
+    ),
   createFamily: (family: object) => axiosInstance.post("/families", family),
   updateFamily: (id: number, family: object) =>
     axiosInstance.put(`/families/${id}`, family),
   getUsers: () => axiosInstance.get("/user-lists"),
   getUser: (id: number) => axiosInstance.get(`/user-lists/${id}`),
+  getUserByEmail: (email: string) =>
+    axiosInstance.get(`/user-lists?filters[email][$eq]=${email}`),
   createUser: (user: object) => axiosInstance.post("/user-lists", user),
   updateUser: (id: number, user: object) =>
     axiosInstance.put(`/user-lists/${id}`, user),

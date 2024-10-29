@@ -43,6 +43,7 @@ export default function RootLayout() {
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="createFamily" />
           <Stack.Screen name="notAcceptedYet" />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </ClerkLoaded>
     </ClerkProvider>

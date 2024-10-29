@@ -21,44 +21,51 @@ const CreateFamily = () => {
     documentId: string;
   }
   const router = useRouter();
-  const [families, setFamilies] = useState<Family[] | null>(null);
-  const [users, setUsers] = useState<any[] | null>(null);
+  const [family, setFamily] = useState<Family[] | null>(null);
+  const [thisUser, setThisUser] = useState<any[] | null>(null);
   const { isSignedIn, user, isLoaded } = useUser();
   const [isKnown, setIsKnown] = useState("waiting");
   const [modalVisibleCreate, setModalVisibleCreate] = useState(false);
   const [modalVisibleJoin, setModalVisibleJoin] = useState(false);
   const [familyName, setFamilyName] = useState("");
   const [joinFamilyId, setJoinFamilyId] = useState("");
-  const [newUser, setNewUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([API.getFamilies(), API.getUsers()])
-      .then(([familiesRes, usersRes]) => {
-        setFamilies(familiesRes.data.data); // Traitement des données des familles
-        setUsers(usersRes.data.data); // Traitement des données des utilisateurs
-        console.log("Families:", familiesRes.data.data);
-      })
-      .catch((err) => {
-        console.error("Erreur API:", err);
-      });
-  }, []);
+    user &&
+      Promise.all([
+        API.getOneFamilyByUser(user.emailAddresses[0].emailAddress),
+        API.getUserByEmail(user.emailAddresses[0].emailAddress),
+      ])
+        .then(([familyRes, userRes]) => {
+          setFamily(familyRes.data.data[0]);
+          setThisUser(userRes.data.data);
+        })
+        // Promise.all([API.getFamilies(), API.getUsers()])
+        //   .then(([familiesRes, usersRes]) => {
+        //     setFamilies(familiesRes.data.data); // Traitement des données des familles
+        //     setUsers(usersRes.data.data); // Traitement des données des utilisateurs
+        //     console.log("Families:", familiesRes.data.data);
+
+        .catch((err) => {
+          console.error("Erreur API:", err);
+        });
+  }, [user]);
 
   useEffect(() => {
-    families &&
-      user &&
-      users &&
-      users.map((oneUser) => {
-        if (oneUser.email === user.emailAddresses[0].emailAddress) {
-          oneUser.profile !== "asker" ? setIsKnown("yes") : setIsKnown("asker");
-        }
-      });
+    console.log("thisUser", thisUser);
+    console.log(family);
+
+    thisUser && thisUser.profile !== "asker"
+      ? setIsKnown("yes")
+      : setIsKnown("asker");
+
     setTimeout(() => {
       if (isKnown === "waiting") {
         setIsKnown("no");
       }
     }, 1000);
-  }, [families, users, user]);
+  }, [thisUser, user]);
 
   const [loaded, error] = useFonts({
     Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
@@ -114,7 +121,7 @@ const CreateFamily = () => {
       // Ferme la modal et réinitialise le champ
       setModalVisibleCreate(false);
       setFamilyName("");
-      router.push("/(tab)/home");
+      router.push("/(tabs)/home");
     } catch (error) {
       console.error(
         "Erreur lors de la création de la famille et de l'utilisateur:",
@@ -276,7 +283,7 @@ const CreateFamily = () => {
   }
 
   if (isKnown === "yes") {
-    return <Redirect href={"/(tab)/home"} />;
+    return <Redirect href={"/(tabs)/home"} />;
   }
 
   if (isKnown === "asker") {

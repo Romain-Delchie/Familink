@@ -12,7 +12,7 @@ const createFamily = () => {
   const [families, setFamilies] = useState<Family[] | null>(null);
   const [users, setUsers] = useState<any[] | null>(null);
   const { isSignedIn, user, isLoaded } = useUser();
-  const [isKnown, setIsKnown] = useState(false);
+  const [isKnown, setIsKnown] = useState("waiting");
 
   useEffect(() => {
     Promise.all([API.getFamilies(), API.getUsers()])
@@ -31,19 +31,22 @@ const createFamily = () => {
       users &&
       users.map((oneUser) => {
         if (oneUser.email === user.emailAddresses[0].emailAddress) {
-          setIsKnown(true);
+          setIsKnown("yes");
         }
       });
+    if (isKnown === "waiting") {
+      setIsKnown("no");
+    }
     // console.log(families);
     // console.log(users);
     // console.log(user);
   }, [families, users, user]);
 
-  if (!isLoaded) {
+  if (isKnown === "waiting") {
     return <Text>Loading user...</Text>;
   }
 
-  if (!isKnown) {
+  if (isKnown === "no") {
     return <Text>Vous n'êtes pas enregistré dans la base de données</Text>;
   }
 

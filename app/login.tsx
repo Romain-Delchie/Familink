@@ -3,15 +3,17 @@ import React, { useEffect } from "react";
 import Colors from "@/constants/Colors";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
-import { useOAuth } from "@clerk/clerk-expo";
+import { useClerk, useOAuth } from "@clerk/clerk-expo";
 
 export default function login() {
   useWarmUpBrowser();
 
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { signOut } = useClerk();
 
   const onPress = React.useCallback(async () => {
     try {
+      signOut();
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow({
           redirectUrl: Linking.createURL("/createFamily", { scheme: "myapp" }),

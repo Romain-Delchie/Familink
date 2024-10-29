@@ -31,6 +31,7 @@ const CreateFamily = () => {
   const [familyName, setFamilyName] = useState("");
   const [joinFamilyId, setJoinFamilyId] = useState("");
   const [newUser, setNewUser] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([API.getFamilies(), API.getUsers()])
@@ -121,6 +122,29 @@ const CreateFamily = () => {
         "Erreur lors de la création de la famille et de l'utilisateur:",
         error
       );
+    }
+  };
+
+  const handleJoinFamily = async () => {
+    // Logique pour rejoindre une famille
+    console.log("Rejoindre la famille avec ID :", joinFamilyId);
+    try {
+      // Crée l'utilisateur (s'il n'existe pas déjà)
+      const userResponse = await API.createUser({
+        data: {
+          firstname: user.firstName,
+          lastname: user.lastName,
+          profil: "asker",
+          email: user.emailAddresses[0].emailAddress,
+          family: [joinFamilyId],
+        },
+      });
+
+      setModalVisibleJoin(false);
+      setJoinFamilyId(""); // Réinitialiser le champ
+    } catch (error) {
+      //Afficher une erreur
+      setErrorMessage("Cet identifiant de famille n'existe pas");
     }
   };
 
@@ -216,13 +240,24 @@ const CreateFamily = () => {
               value={joinFamilyId}
               onChangeText={setJoinFamilyId}
             />
+            {/* Affichage du message d'erreur */}
+            {errorMessage && (
+              <Text
+                style={{
+                  color: "red",
+                  textAlign: "center",
+                  marginTop: -20,
+                  marginBottom: 20,
+                  fontSize: 10,
+                }}
+              >
+                {errorMessage}
+              </Text>
+            )}
             <TouchableOpacity
               style={styles.submitButton}
               onPress={() => {
-                console.log("Rejoindre la famille avec ID :", joinFamilyId);
-                // Logique pour rejoindre la famille
-                setModalVisibleJoin(false);
-                setJoinFamilyId(""); // Réinitialiser le champ
+                handleJoinFamily();
               }}
             >
               <Text style={styles.buttonText}>Rejoindre</Text>
@@ -250,7 +285,7 @@ const CreateFamily = () => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: Colors.bronze10,
+    backgroundColor: Colors.bronze9,
     width: "80%",
     height: 60,
     marginHorizontal: "auto",

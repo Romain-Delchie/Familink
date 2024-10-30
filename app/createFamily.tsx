@@ -7,13 +7,14 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import API from "./services/API";
 import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
 import { useRouter, Redirect } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import AppContext from "./context/appContext";
 
 const CreateFamily = () => {
   interface User {
@@ -22,6 +23,7 @@ const CreateFamily = () => {
   }
 
   const router = useRouter();
+  const { userFamily, updateUserFamily } = useContext(AppContext);
   const [userConnected, setUserConnected] = useState<User | null>(null);
   const { isSignedIn, user, isLoaded } = useUser();
   const [isKnown, setIsKnown] = useState("waiting");
@@ -39,6 +41,7 @@ const CreateFamily = () => {
       ])
         .then(([familyRes, userRes]) => {
           const family = familyRes.data.data[0];
+          updateUserFamily(userRes.data.data[0]);
           setUserConnected(userRes.data.data[0]);
         })
         .catch((err) => {
@@ -115,6 +118,10 @@ const CreateFamily = () => {
         data: {
           family: [createdFamily.documentId],
         },
+      }).then((res) => {
+        console.log("res.data.data", res.data.data);
+
+        updateUserFamily(res.data.data);
       });
 
       // Ferme la modal et réinitialise le champ

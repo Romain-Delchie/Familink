@@ -7,38 +7,32 @@ interface AppProviderProps {
 }
 
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [userFamily, setUserFamily] = useState<any | null>(null);
+  const [userFamily, setUserFamily] = useState<object | null>(null);
   const [events, setEvents] = useState(null);
   const [shoppingLists, setShoppingLists] = useState(null);
   const [toDoItems, setToDoItems] = useState(null);
 
-  const updateUserFamily = (newUser: any) => {
+  const updateUserFamily = (newUser: object) => {
     setUserFamily(newUser);
   };
 
-  const updateEvents = (newEvents: any) => {
-    setEvents(newEvents);
-  };
+  // const updateEvents = (newEvents: any) => {
+  //   setEvents(newEvents);
+  // };
 
-  const updateShoppingLists = (newShoppingLists: any) => {
-    setShoppingLists(newShoppingLists);
-  };
+  // const updateShoppingLists = (newShoppingLists: any) => {
+  //   setShoppingLists(newShoppingLists);
+  // };
 
-  const updateToDoItems = (newToDoItems: any) => {
-    setToDoItems(newToDoItems);
-  };
+  // const updateToDoItems = (newToDoItems: any) => {
+  //   setToDoItems(newToDoItems);
+  // };
 
   return (
     <AppContext.Provider
       value={{
         userFamily,
         updateUserFamily,
-        events,
-        updateEvents,
-        shoppingLists,
-        updateShoppingLists,
-        toDoItems,
-        updateToDoItems,
       }}
     >
       {children}

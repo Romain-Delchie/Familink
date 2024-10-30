@@ -1,5 +1,15 @@
 import { createContext } from "react";
 
-const AppContext = createContext({});
+interface AppContextProps {
+  userFamily: any;
+
+  updateUserFamily: (family: any) => void;
+}
+
+const AppContext = createContext<AppContextProps>({
+  userFamily: null,
+
+  updateUserFamily: () => {},
+});
 
 export default AppContext;

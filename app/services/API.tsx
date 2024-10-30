@@ -20,7 +20,7 @@ const API = {
   getOneFamily: (id: number) => axiosInstance.get(`/families/${id}`),
   getOneFamilyByUser: (email: string) =>
     axiosInstance.get(
-      `/families?filters[user_list][email][$eq]=${email}&populate=*`
+      `/families?filters[user_lists][email][$eq]=${email}&populate=*`
     ),
   createFamily: (family: object) => axiosInstance.post("/families", family),
   updateFamily: (id: number, family: object) =>

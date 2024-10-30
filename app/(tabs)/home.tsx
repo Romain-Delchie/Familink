@@ -66,9 +66,6 @@ const home = () => {
           <Feather name="refresh-ccw" size={24} color={Colors.bronze11} />
         </TouchableOpacity>
       </View>
-      {userFamily && (
-        <Text style={{ color: Colors.bronze12 }}>{userFamily.firstname}</Text>
-      )}
     </View>
   );
 };

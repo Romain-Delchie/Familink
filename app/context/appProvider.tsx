@@ -8,12 +8,17 @@ interface AppProviderProps {
 
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [userFamily, setUserFamily] = useState<object | null>(null);
+  const [family, setFamily] = useState<object | null>(null);
   const [events, setEvents] = useState(null);
   const [shoppingLists, setShoppingLists] = useState(null);
   const [toDoItems, setToDoItems] = useState(null);
 
   const updateUserFamily = (newUser: object) => {
     setUserFamily(newUser);
+  };
+
+  const updateFamily = (newFamily: object) => {
+    setFamily(newFamily);
   };
 
   // const updateEvents = (newEvents: any) => {
@@ -33,6 +38,8 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       value={{
         userFamily,
         updateUserFamily,
+        family,
+        updateFamily,
       }}
     >
       {children}

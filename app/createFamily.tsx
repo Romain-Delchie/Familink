@@ -23,7 +23,7 @@ const CreateFamily = () => {
   }
 
   const router = useRouter();
-  const { userFamily, updateUserFamily } = useContext(AppContext);
+  const { userFamily, updateUserFamily, updateFamily } = useContext(AppContext);
   const [userConnected, setUserConnected] = useState<User | null>(null);
   const { isSignedIn, user, isLoaded } = useUser();
   const [isKnown, setIsKnown] = useState("waiting");
@@ -40,7 +40,8 @@ const CreateFamily = () => {
         API.getUserByEmail(user.emailAddresses[0].emailAddress),
       ])
         .then(([familyRes, userRes]) => {
-          const family = familyRes.data.data[0];
+          updateFamily(familyRes.data.data[0]);
+
           updateUserFamily(userRes.data.data[0]);
           setUserConnected(userRes.data.data[0]);
         })

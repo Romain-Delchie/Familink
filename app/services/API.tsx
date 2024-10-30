@@ -1,8 +1,8 @@
 import axios from "axios";
 import { create } from "react-test-renderer";
 
-// const baseURL = "http://192.168.1.147:1337/api";
-const baseURL = "http://192.168.1.104:1337/api";
+const baseURL = "http://192.168.1.147:1337/api";
+// const baseURL = "http://192.168.1.104:1337/api";
 
 const API_KEY =
   "1776f7fec3bdf35929e562d12127c24ea054aa4f197f9011bfe4f2969e5af99bce05034ba9162c3613f1c54d24bfc241d4df5c76eeaac8c16d64a46e87521888de4f054b50341c711ba6f1c03fb77d2906ed952d4722aa57123ef9e47e26058a2695dfe06f77211db544dea10d286771762363f6f53af918f0d777c91e1639c2";
@@ -20,7 +20,7 @@ const API = {
   getOneFamily: (id: number) => axiosInstance.get(`/families/${id}`),
   getOneFamilyByUser: (email: string) =>
     axiosInstance.get(
-      `/families?populate=*filters[user_list][email][$eq]=${email}&populate=*`
+      `/families?filters[user_list][email][$eq]=${email}&populate=*`
     ),
   createFamily: (family: object) => axiosInstance.post("/families", family),
   updateFamily: (id: number, family: object) =>

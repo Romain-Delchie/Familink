@@ -16,13 +16,13 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 const CreateFamily = () => {
-  interface Family {
-    Name: string;
-    documentId: string;
+  interface User {
+    profile: string;
+    // Add other properties of User if needed
   }
+
   const router = useRouter();
-  const [family, setFamily] = useState<Family[] | null>(null);
-  const [thisUser, setThisUser] = useState<any[] | null>(null);
+  const [userConnected, setUserConnected] = useState<User | null>(null);
   const { isSignedIn, user, isLoaded } = useUser();
   const [isKnown, setIsKnown] = useState("waiting");
   const [modalVisibleCreate, setModalVisibleCreate] = useState(false);
@@ -32,40 +32,39 @@ const CreateFamily = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    user &&
+    if (user) {
       Promise.all([
         API.getOneFamilyByUser(user.emailAddresses[0].emailAddress),
         API.getUserByEmail(user.emailAddresses[0].emailAddress),
       ])
         .then(([familyRes, userRes]) => {
-          setFamily(familyRes.data.data[0]);
-          setThisUser(userRes.data.data);
+          const family = familyRes.data.data[0];
+          setUserConnected(userRes.data.data[0]);
         })
-        // Promise.all([API.getFamilies(), API.getUsers()])
-        //   .then(([familiesRes, usersRes]) => {
-        //     setFamilies(familiesRes.data.data); // Traitement des données des familles
-        //     setUsers(usersRes.data.data); // Traitement des données des utilisateurs
-        //     console.log("Families:", familiesRes.data.data);
-
         .catch((err) => {
           console.error("Erreur API:", err);
         });
+    }
   }, [user]);
 
   useEffect(() => {
-    console.log("thisUser", thisUser);
-    console.log(family);
-
-    thisUser && thisUser.profile !== "asker"
-      ? setIsKnown("yes")
-      : setIsKnown("asker");
-
-    setTimeout(() => {
-      if (isKnown === "waiting") {
-        setIsKnown("no");
-      }
-    }, 1000);
-  }, [thisUser, user]);
+    console.log("userConnected", userConnected);
+    console.log(isKnown);
+    if (userConnected !== null) {
+      userConnected === undefined
+        ? setIsKnown("no")
+        : userConnected.profile !== "asker"
+        ? setIsKnown("yes")
+        : setIsKnown("asker");
+    }
+    // if (userConnected) {
+    //   userConnected === []
+    //     ? setIsKnown("no")
+    //     : userConnected.profile !== "asker"
+    //     ? setIsKnown("yes")
+    //     : setIsKnown("asker");
+    // }
+  }, [userConnected]);
 
   const [loaded, error] = useFonts({
     Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
@@ -88,10 +87,10 @@ const CreateFamily = () => {
       // Crée l'utilisateur (s'il n'existe pas déjà)
       const userResponse = await API.createUser({
         data: {
-          firstname: user.firstName,
-          lastname: user.lastName,
+          firstname: user?.firstName,
+          lastname: user?.lastName,
           profile: "admin",
-          email: user.emailAddresses[0].emailAddress,
+          email: user?.emailAddresses[0].emailAddress,
         },
       });
       console.log("userResponse", userResponse);
@@ -138,10 +137,10 @@ const CreateFamily = () => {
       // Crée l'utilisateur (s'il n'existe pas déjà)
       const userResponse = await API.createUser({
         data: {
-          firstname: user.firstName,
-          lastname: user.lastName,
+          firstname: user?.firstName,
+          lastname: user?.lastName,
           profile: "asker",
-          email: user.emailAddresses[0].emailAddress,
+          email: user?.emailAddresses[0].emailAddress,
           family: [joinFamilyId],
         },
       });

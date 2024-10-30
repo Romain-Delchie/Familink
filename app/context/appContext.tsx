@@ -1,13 +1,22 @@
 import { createContext } from "react";
 
+type FamilyType = {
+  id: string;
+  name: string;
+  members: object[];
+  events: object[];
+  shoppingLists: object[];
+  toDoItems: object[];
+};
+
 interface AppContextProps {
   userFamily: object | null;
 
   updateUserFamily: (newUser: object) => void;
 
-  family: object | null;
+  family: FamilyType | null;
 
-  updateFamily: (newFamily: object) => void;
+  updateFamily: (newFamily: FamilyType) => void;
 }
 
 const AppContext = createContext<AppContextProps>({

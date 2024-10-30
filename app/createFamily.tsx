@@ -60,13 +60,6 @@ const CreateFamily = () => {
         ? setIsKnown("yes")
         : setIsKnown("asker");
     }
-    // if (userConnected) {
-    //   userConnected === []
-    //     ? setIsKnown("no")
-    //     : userConnected.profile !== "asker"
-    //     ? setIsKnown("yes")
-    //     : setIsKnown("asker");
-    // }
   }, [userConnected]);
 
   const [loaded, error] = useFonts({

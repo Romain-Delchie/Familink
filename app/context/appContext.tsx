@@ -1,12 +1,25 @@
 import { createContext } from "react";
 
+type event = {
+  name: string;
+  date: string;
+  begin: string;
+  end: string;
+  instruction: string;
+};
+
+type todoItem = {
+  ranking: number;
+  name: string;
+};
+
 type FamilyType = {
   id: string;
   name: string;
   members: object[];
-  events: object[];
+  events: event[];
   shoppingLists: object[];
-  toDoItems: object[];
+  todo_items: todoItem[];
 };
 
 interface AppContextProps {

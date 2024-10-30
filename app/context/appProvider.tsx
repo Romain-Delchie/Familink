@@ -2,14 +2,27 @@ import AppContext from "./appContext";
 
 import React, { useState, ReactNode } from "react";
 
+type todoItem = {
+  ranking: number;
+  name: string;
+};
+
+type event = {
+  name: string;
+  date: string;
+  begin: string;
+  end: string;
+  instruction: string;
+};
+
 // Define FamilyType
 interface FamilyType {
   id: string;
   name: string;
   members: object[];
-  events: object[];
+  events: event[];
   shoppingLists: object[];
-  toDoItems: object[];
+  todo_items: todoItem[];
 }
 
 interface AppProviderProps {

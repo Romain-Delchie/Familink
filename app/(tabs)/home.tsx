@@ -122,7 +122,7 @@ const home = () => {
                 .sort((a, b) => {
                   const timeA = new Date(`1970-01-01T${a.begin}`);
                   const timeB = new Date(`1970-01-01T${b.begin}`);
-                  return timeA - timeB;
+                  return timeA.getTime() - timeB.getTime();
                 })
                 .map((event, index) => {
                   return (
@@ -171,7 +171,7 @@ const home = () => {
                       <View style={{ width: "50%" }}>
                         <Text
                           style={{
-                            fontSize: 12,
+                            fontSize: 13,
                             color: Colors.bronze12,
                             fontFamily: "Overlock",
                           }}
@@ -181,7 +181,7 @@ const home = () => {
                         {event.instruction && (
                           <Text
                             style={{
-                              fontSize: 12,
+                              fontSize: 13,
                               color: Colors.bronze11,
                               fontFamily: "Amatic",
                             }}

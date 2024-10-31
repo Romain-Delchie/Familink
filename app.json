@@ -26,7 +26,32 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "@react-native-community/datetimepicker",
+        {
+          "android": {
+            "datePicker": {
+              "colorAccent": {
+                "light": "#FF5722"
+              },
+              "textColorPrimary": {
+                "light": "#FF5722"
+              }
+            },
+            "timePicker": {
+              "background": "red",
+              "numbersBackgroundColor": {
+                "light": "#FF5722",
+                "dark": "#383838"
+              }
+            }
+          }
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     }

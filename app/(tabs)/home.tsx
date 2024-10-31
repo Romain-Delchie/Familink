@@ -17,7 +17,7 @@ import moment from "moment";
 import "moment/locale/fr";
 
 const home = () => {
-  const { userFamily, family } = useContext(AppContext);
+  const { family } = useContext(AppContext);
   const today = moment().format("dddd Do MMMM YYYY");
   const todayDate = moment().format("YYYY-MM-DD");
   const { user } = useUser();
@@ -195,7 +195,13 @@ const home = () => {
                 })
             ) : (
               <View>
-                <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: Colors.bronze11,
+                    fontFamily: "Amatic",
+                  }}
+                >
                   Aucun évènement prévu aujourd'hui
                 </Text>
               </View>
@@ -240,7 +246,13 @@ const home = () => {
             </View>
           ) : (
             <View>
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: Colors.bronze11,
+                  fontFamily: "Overlock",
+                }}
+              >
                 Aucune tâche prioritaire
               </Text>
             </View>

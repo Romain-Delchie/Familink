@@ -6,6 +6,7 @@ export default function _layout() {
   return (
     <Tabs>
       <Tabs.Screen name="home" options={{ headerShown: false }} />
+      <Tabs.Screen name="calendar" options={{ headerShown: false }} />
     </Tabs>
   );
 }

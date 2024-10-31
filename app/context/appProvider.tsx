@@ -8,11 +8,13 @@ type todoItem = {
 };
 
 type event = {
+  documentId: string;
   name: string;
   date: string;
   begin: string;
   end: string;
   instruction: string;
+  author: string;
 };
 
 // Define FamilyType
@@ -23,6 +25,7 @@ interface FamilyType {
   events: event[];
   shoppingLists: object[];
   todo_items: todoItem[];
+  documentId: string;
 }
 
 interface AppProviderProps {

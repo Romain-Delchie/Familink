@@ -50,8 +50,9 @@ export default function ListItem({ list }) {
     modalDeleteList: {
       bottom: 0,
       top: 0,
-      backgroundColor: "rgba(255, 255, 255, 0.8)",
+      backgroundColor: Colors.bronze3,
       alignItems: "center",
+      gap: 20,
       justifyContent: "center",
       height: "100%",
     },
@@ -259,32 +260,54 @@ export default function ListItem({ list }) {
         <View
           style={{
             height: "100%",
-            backgroundColor: "whitesmoke",
+            backgroundColor: Colors.bronze4,
             padding: 30,
             alignContent: "center",
             justifyContent: "center",
           }}
         >
-          <Text>Ajouter un nom de produit :</Text>
+          <Text
+            style={{
+              fontFamily: "AmaticBold",
+              color: Colors.bronze11,
+              fontSize: 26,
+            }}
+          >
+            Ajouter un nom de produit :
+          </Text>
           <TextInput
             style={{
               height: 40,
-              borderColor: "gray",
+              borderColor: Colors.bronze8,
               borderWidth: 1,
               marginTop: 5,
               marginBottom: 50,
+              borderRadius: 10,
+              backgroundColor: Colors.bronze5,
+              color: Colors.bronze12,
             }}
             onChangeText={(text) => setNewItem({ ...newItem, name: text })}
             value={newItem.name}
           />
-          <Text>quantité: (facultatif)</Text>
+          <Text
+            style={{
+              fontFamily: "AmaticBold",
+              color: Colors.bronze11,
+              fontSize: 26,
+            }}
+          >
+            quantité: (facultatif)
+          </Text>
           <TextInput
             style={{
               height: 40,
-              borderColor: "gray",
+              borderColor: Colors.bronze8,
               borderWidth: 1,
               marginTop: 5,
               marginBottom: 50,
+              borderRadius: 10,
+              backgroundColor: Colors.bronze5,
+              color: Colors.bronze12,
             }}
             onChangeText={(text) => setNewItem({ ...newItem, quantity: text })}
             value={newItem.quantity}
@@ -293,7 +316,7 @@ export default function ListItem({ list }) {
             <TouchableOpacity
               onPress={handleAddItem}
               style={{
-                backgroundColor: "green",
+                backgroundColor: Colors.bronze9,
                 borderRadius: 5,
                 padding: 15,
                 margin: 30,
@@ -301,7 +324,7 @@ export default function ListItem({ list }) {
                 alignItems: "center",
               }}
             >
-              <AntDesign name="check" size={30} color="white" />
+              <AntDesign name="check" size={30} color={Colors.bronze12} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
@@ -309,12 +332,12 @@ export default function ListItem({ list }) {
                 padding: 15,
                 margin: 30,
                 width: 100,
-                backgroundColor: "red",
+                backgroundColor: Colors.bronze8,
                 alignItems: "center",
                 borderRadius: 5,
               }}
             >
-              <Entypo name="cross" size={30} color="white" />
+              <Entypo name="cross" size={30} color={Colors.bronze12} />
             </TouchableOpacity>
           </View>
         </View>
@@ -327,12 +350,36 @@ export default function ListItem({ list }) {
         <Entypo name="trash" size={24} color="darkred" />
       </TouchableOpacity>
       <Modal animationType="slide" transparent={true} visible={modalDeleteAll}>
-        <View style={{ backgroundColor: "yellow" }}>
-          <Text>
+        <View
+          style={{
+            backgroundColor: Colors.bronze4,
+            height: "100%",
+            justifyContent: "center",
+            gap: 60,
+          }}
+        >
+          <Text
+            style={{
+              color: Colors.bronze11,
+              fontSize: 30,
+              fontFamily: "AmaticBold",
+              width: 200,
+              marginHorizontal: "auto",
+              textAlign: "center",
+            }}
+          >
             Etes vous sur de vouloir supprimer TOUS les produits de la liste
           </Text>
-          <Button title="Oui" onPress={handleDeleteAllItem} />
-          <Button title="Non" onPress={() => setModalDeleteAll(false)} />
+          <Button
+            title="Oui"
+            onPress={handleDeleteAllItem}
+            color={Colors.bronze6}
+          />
+          <Button
+            color={Colors.bronze6}
+            title="Non"
+            onPress={() => setModalDeleteAll(false)}
+          />
         </View>
       </Modal>
     </ScrollView>

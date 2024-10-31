@@ -50,12 +50,20 @@ export default function AddList() {
   };
 
   return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
+    <View
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: Colors.bronze2,
+        flex: 1,
+      }}
+    >
       <Text
         style={{
-          fontSize: 30,
+          fontSize: 24,
+          fontFamily: "BowlbyOne",
           color: Colors.bronze11,
-          marginBottom: 60,
+          marginBottom: 20,
           marginTop: 60,
         }}
       >
@@ -63,29 +71,36 @@ export default function AddList() {
       </Text>
       <TextInput
         style={{
-          height: 40,
-          width: 200,
-          borderColor: "gray",
+          height: 80,
+          width: "80%",
+          borderColor: Colors.bronze5,
+          borderRadius: 10,
           borderWidth: 1,
           marginBottom: 20,
+          fontSize: 20,
+          fontFamily: "AmaticBold",
+          color: Colors.bronze11,
+          padding: 10,
+          backgroundColor: Colors.bronze5,
         }}
         value={nameList}
         placeholder="Nom de la liste"
+        placeholderTextColor={Colors.bronze8}
         onChangeText={(text) => setNameList(text)}
       />
       <TouchableOpacity
         style={{
-          backgroundColor: Colors.bronze10,
+          backgroundColor: Colors.bronze9,
           padding: 10,
           borderRadius: 10,
           alignItems: "center",
-          width: 100,
-          height: 60,
+          width: "60%",
+          height: 70,
         }}
         onPress={() => handleSubmit()}
       >
-        <AntDesign name="check" size={30} color="white" />
-        <Text style={{ color: "white" }}>Valider</Text>
+        <AntDesign name="check" size={30} color={Colors.bronze12} />
+        <Text style={{ color: Colors.bronze12 }}>Valider</Text>
       </TouchableOpacity>
     </View>
   );

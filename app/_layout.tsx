@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
 import AppProvider from "./context/appProvider";
+import { Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   const tokenCache = {
@@ -40,13 +41,15 @@ export default function RootLayout() {
     <ClerkProvider publishableKey={publishableKey}>
       <ClerkLoaded>
         <AppProvider>
-          <Stack>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen name="createFamily" />
-            <Stack.Screen name="notAcceptedYet" />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
+          <GestureHandlerRootView>
+            <Stack>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+              <Stack.Screen name="createFamily" />
+              <Stack.Screen name="notAcceptedYet" />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+          </GestureHandlerRootView>
         </AppProvider>
       </ClerkLoaded>
     </ClerkProvider>

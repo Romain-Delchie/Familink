@@ -23,7 +23,7 @@ interface FamilyType {
   name: string;
   members: object[];
   events: event[];
-  shoppingLists: object[];
+  shopping_lists: object[];
   todo_items: todoItem[];
   documentId: string;
 }

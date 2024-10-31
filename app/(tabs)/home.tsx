@@ -30,8 +30,6 @@ const home = () => {
     Overlock: require("../../assets/fonts/Overlock-Regular.ttf"),
   });
 
-  console.log(family);
-
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();

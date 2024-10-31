@@ -1,27 +1,26 @@
 import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Fontisto from "@expo/vector-icons/Fontisto";
 import React from "react";
 import Colors from "@/constants/Colors";
 
 const tabBar = ({ state, descriptors, navigation }) => {
   const icons = {
     home: (props) => (
-      <AntDesign name="home" size={20} color={Colors.bronze12} {...props} />
+      <AntDesign name="home" size={24} color={Colors.bronze6} {...props} />
     ),
     calendar: (props) => (
-      <AntDesign name="calendar" size={20} color={Colors.bronze12} {...props} />
+      <AntDesign name="calendar" size={24} color={Colors.bronze6} {...props} />
     ),
     shopping: (props) => (
       <AntDesign
         name="shoppingcart"
-        size={20}
-        color={Colors.bronze12}
+        size={24}
+        color={Colors.bronze6}
         {...props}
       />
     ),
     todo: (props) => (
-      <Fontisto name="list-1" size={20} color={Colors.bronze12} {...props} />
+      <AntDesign name="bars" size={24} color={Colors.bronze6} {...props} />
     ),
   };
   return (
@@ -67,13 +66,10 @@ const tabBar = ({ state, descriptors, navigation }) => {
             onPress={onPress}
             onLongPress={onLongPress}
           >
-            <Text
-              style={{ color: isFocused ? Colors.bronze12 : Colors.bronze11 }}
-            >
-              {icons[route.name]({
-                color: isFocused ? Colors.bronze12 : Colors.bronze11,
-              })}
-            </Text>
+            {icons[route.name]({
+              color: isFocused ? Colors.bronze12 : Colors.bronze10,
+              size: isFocused ? 30 : 24,
+            })}
           </TouchableOpacity>
         );
       })}

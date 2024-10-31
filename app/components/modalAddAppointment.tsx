@@ -15,17 +15,23 @@ import { Entypo } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
 
+interface ModalAddAppointmentProps {
+  onClose: () => void;
+  setRefresh: (value: boolean) => void;
+  setAgendaKey: (value: (prevKey: number) => number) => void;
+}
+
 export default function ModalAddAppointment({
   onClose,
   setRefresh,
   setAgendaKey,
-}) {
+}: ModalAddAppointmentProps) {
   const { family, updateFamily } = useContext(AppContext);
   const [date, setDate] = useState(new Date());
   const [startHour, setStartHour] = useState("");
   const [endHour, setEndHour] = useState("");
   const [startOrEnd, setStartOrEnd] = useState("");
-  const [mode, setMode] = useState();
+  const [mode, setMode] = useState<string | undefined>(undefined);
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [instruction, setInstruction] = useState("");
@@ -36,7 +42,7 @@ export default function ModalAddAppointment({
   const [error, setError] = useState(false);
   const { user } = useUser();
 
-  const handleFocus = (inputName) => {
+  const handleFocus = (inputName: string) => {
     setError(false);
     setInputStates((prevInputStates) => ({
       ...prevInputStates,
@@ -44,17 +50,17 @@ export default function ModalAddAppointment({
     }));
   };
 
-  const handleBlur = (inputName) => {
+  const handleBlur = (inputName: string) => {
     setInputStates((prevInputStates) => ({
       ...prevInputStates,
       [inputName]: false,
     }));
   };
 
-  const onChange = (event, selectedDate) => {
+  const onChange = (event: object, selectedDate: Date) => {
     setError(false);
     setShow(false);
-    const currentDate = selectedDate;
+    const currentDate = selectedDate as Date;
     setDate(currentDate);
     if (startOrEnd == "start") {
       setStartHour(
@@ -75,7 +81,7 @@ export default function ModalAddAppointment({
     }
   };
 
-  const showMode = (currentMode) => {
+  const showMode = (currentMode: string) => {
     setShow(true);
     setMode(currentMode);
   };
@@ -85,7 +91,7 @@ export default function ModalAddAppointment({
     setStartOrEnd("");
   };
 
-  const showTimepicker = (which) => {
+  const showTimepicker = (which: string) => {
     showMode("time");
     if (which == "start") {
       setStartOrEnd("start");
@@ -102,9 +108,8 @@ export default function ModalAddAppointment({
         end: endHour + ":00",
         instruction: instruction,
         date: date,
-        author: user.imageUrl,
-        //TO DO : add id logic
-        calend_my: 1,
+        author: user?.imageUrl,
+        family: family?.documentId,
       },
     };
 
@@ -117,46 +122,45 @@ export default function ModalAddAppointment({
       setError(true);
       return;
     } else {
+      console.log(family.events);
+
       updateFamily({ ...family, events: [...family.events, appointment] });
-      API.addEvent(appointment)
+      API.createEvent(appointment)
         .then((response) => {
           setAgendaKey((prevKey) => prevKey + 1);
+          console.log(family.events);
           onClose(); // Fermez la modal
         })
         .catch((error) => {
-          console.error("Erreur lors de la requête API :", error.response);
+          console.error(
+            "Erreur lors de la requête API :",
+            error.response.message
+          );
         });
     }
   };
   const styles = StyleSheet.create({
-    input: {
-      height: 40,
-      width: 280,
-      margin: 12,
-      borderWidth: 1,
-      backgroundColor: Colors.bronze5,
-    },
-
     TouchIcon: {
       flexDirection: "row",
       justifyContent: "space-between",
       borderRadius: 5,
       padding: 15,
-      margin: 5,
       width: 300,
+      fontSize: 18,
       color: Colors.bronze11,
+      fontFamily: "AmaticBold",
     },
     textInside: {
       width: 200,
-      fontSize: 15,
+      fontSize: 18,
       color: Colors.bronze11,
       marginRight: 10,
+      fontFamily: "AmaticBold",
     },
     btnCross: {
       position: "absolute",
       top: 50,
       right: 20,
-      color: Colors.bronze11,
       borderRadius: 50,
     },
     btnValContainer: {
@@ -165,7 +169,7 @@ export default function ModalAddAppointment({
       alignItems: "center",
     },
     btnValidate: {
-      backgroundColor: "green",
+      backgroundColor: Colors.bronze10,
       borderRadius: 5,
       padding: 15,
       margin: 30,
@@ -176,10 +180,9 @@ export default function ModalAddAppointment({
       padding: 15,
       margin: 30,
       width: 100,
-      backgroundColor: "red",
+      backgroundColor: Colors.bronze10,
       alignItems: "center",
       borderRadius: 5,
-      color: Colors.bronze11,
     },
   });
 
@@ -194,15 +197,15 @@ export default function ModalAddAppointment({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: Colors.bronze3,
+        backgroundColor: Colors.bronze2,
+        paddingBottom: 50,
       }}
     >
       <Text
         style={{
           fontSize: 30,
-          fontWeight: 700,
+          fontFamily: "BowlbyOne",
           color: Colors.bronze11,
-          marginBottom: 60,
         }}
       >
         Ajouter un RDV
@@ -271,14 +274,14 @@ export default function ModalAddAppointment({
           onPress={handleAddAppointment}
           style={styles.btnValidate}
         >
-          <AntDesign name="check" size={30} color="white" />
+          <AntDesign name="check" size={30} color="rgba(88, 254, 88, 0.8)" />
         </TouchableOpacity>
         <TouchableOpacity onPress={onClose} style={styles.btnClose}>
-          <Entypo name="cross" size={30} color="white" />
+          <Entypo name="cross" size={30} color="rgba(159, 73, 79, 0.8)" />
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={onClose} style={styles.btnCross}>
-        <Octicons name="x" size={40} />
+        <Octicons name="x" size={40} color={Colors.bronze9} />
       </TouchableOpacity>
       {show && (
         <DateTimePicker

@@ -63,7 +63,6 @@ const calendar = () => {
       "Samedi",
     ],
     dayNamesShort: ["Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."],
-    today: "Aujourd'hui",
   };
   LocaleConfig.defaultLocale = "fr";
 
@@ -149,8 +148,8 @@ const calendar = () => {
           textDayHeaderFontSize: 16,
           agendaKnobColor: Colors.bronze8,
           reservationsBackgroundColor: Colors.bronze1,
-          // agendaTodayColor: 'Colors.bronze8',
-          agendaDayNumColor: Colors.bronze12,
+          agendaTodayColor: Colors.bronze12,
+          agendaDayNumColor: Colors.bronze11,
           agendaDayTextColor: Colors.bronze11,
         }}
         key={agendaKey}
@@ -180,7 +179,9 @@ const calendar = () => {
         showClosingKnob={true}
         showOnlySelectedDayItems={onlyOneDay}
         onRefresh={() => {
-          updateFamily({ ...family, events: events });
+          // updateFamily({ ...family, events: events });
+          console.log(family.events);
+
           setIconVisible(false);
           setAgendaKey(agendaKey + 1);
         }}

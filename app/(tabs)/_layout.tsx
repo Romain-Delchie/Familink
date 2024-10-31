@@ -8,6 +8,8 @@ export default function _layout() {
     <Tabs tabBar={(props) => <TabBar {...props} />}>
       <Tabs.Screen name="home" options={{ headerShown: false }} />
       <Tabs.Screen name="calendar" options={{ headerShown: false }} />
+      <Tabs.Screen name="shopping" options={{ headerShown: false }} />
+      <Tabs.Screen name="todo" options={{ headerShown: false }} />
     </Tabs>
   );
 }

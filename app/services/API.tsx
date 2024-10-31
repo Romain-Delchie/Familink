@@ -34,6 +34,7 @@ const API = {
     axiosInstance.put(`/user-lists/${id}`, user),
   getEventsByFamily: (id: string) =>
     axiosInstance.get(`/events?filters[family][documentId][$eq]=${id}`),
+  createEvent: (event: object) => axiosInstance.post("/events", event),
   //   getCalendmy: () =>
   //     axiosInstance.get(
   //       `/calend-mies?populate[0]=events,shopping_lists,to_do&populate[1]=shopping_lists.list_items,to_do.todo_items`

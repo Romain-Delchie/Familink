@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../context/appContext";
 import {
   View,
@@ -14,17 +14,20 @@ import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
+import { setItem } from "expo-secure-store";
 
 interface ModalAddAppointmentProps {
   onClose: () => void;
   setRefresh: (value: boolean) => void;
   setAgendaKey: (value: (prevKey: number) => number) => void;
+  setItems: (value: any) => void;
 }
 
 export default function ModalAddAppointment({
   onClose,
   setRefresh,
   setAgendaKey,
+  setItems,
 }: ModalAddAppointmentProps) {
   const { family, updateFamily } = useContext(AppContext);
   const [date, setDate] = useState(new Date());
@@ -124,11 +127,14 @@ export default function ModalAddAppointment({
     } else {
       console.log(family.events);
 
-      updateFamily({ ...family, events: [...family.events, appointment] });
       API.createEvent(appointment)
         .then((response) => {
           setAgendaKey((prevKey) => prevKey + 1);
-          console.log(family.events);
+          updateFamily({
+            ...family,
+            events: [...family.events, response.data.data],
+          });
+
           onClose(); // Fermez la modal
         })
         .catch((error) => {

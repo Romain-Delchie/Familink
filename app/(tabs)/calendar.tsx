@@ -116,7 +116,14 @@ const calendar = () => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 30, backgroundColor: Colors.bronze2 }}>
+    <View
+      style={{
+        flex: 1,
+        padding: 30,
+        backgroundColor: Colors.bronze2,
+        paddingBottom: 80,
+      }}
+    >
       <Agenda
         theme={{
           // backgroundColor: Colors.bronze2,

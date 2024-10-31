@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.roomsrio.Familink"
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +43,7 @@
               }
             },
             "timePicker": {
-              "background": "red",
+              "background": { "light": "#FF5722", "dark": "#383838" },
               "numbersBackgroundColor": {
                 "light": "#FF5722",
                 "dark": "#383838"
@@ -54,6 +55,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "228e056a-32cd-4855-bf17-9e98f6e4d2b6"
+      }
     }
   }
 }

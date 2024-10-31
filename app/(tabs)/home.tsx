@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.bronze2,
+    paddingBottom: 60,
   },
   header: {
     display: "flex",

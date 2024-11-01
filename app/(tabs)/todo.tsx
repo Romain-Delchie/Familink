@@ -77,14 +77,24 @@ export default function Todo() {
 
   const handleDelete = (id) => {
     // Filter out the item with the specified id
-    const updatedData = sortedTodos.filter((item) => item.id !== id);
+
+    const updatedData = sortedTodos.filter((item) => item.documentId !== id);
     // After filtering, update the rankings of the remaining items
     const updatedDataWithRanking = updatedData.map((item, index) => ({
       ...item,
       ranking: index,
     }));
+
     updatedDataWithRanking.map((item) => {
-      API.updateToDoItems(item.id, { data: item })
+      const dataToUpdate = {
+        data: {
+          name: item.name,
+          author: item.author,
+          ranking: item.ranking,
+        },
+      };
+
+      API.updateTodoItem(item.documentId, dataToUpdate)
         .then((res) => {
           setInitialData(updatedDataWithRanking);
         })
@@ -95,7 +105,7 @@ export default function Todo() {
     });
     API.deleteToDoItem(id);
     setInitialData(updatedDataWithRanking);
-    updateToDoItems(updatedDataWithRanking);
+    updateFamily({ ...family, todo_items: updatedDataWithRanking });
   };
 
   const handleAddTask = () => {
@@ -242,7 +252,7 @@ export default function Todo() {
             </Text>
             {/* Delete icon (Entypo icon) */}
             <TouchableOpacity
-              onPress={() => handleDelete(item.id)} // Define a function to handle the delete action
+              onPress={() => handleDelete(item.documentId)} // Define a function to handle the delete action
             >
               <Entypo
                 name="trash" // Replace with the name of the Entypo icon you want to use

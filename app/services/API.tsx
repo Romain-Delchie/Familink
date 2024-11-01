@@ -43,6 +43,9 @@ const API = {
   createItemToList: (item: object) => axiosInstance.post("/list-items", item),
   deleteItemFromList: (id: number) => axiosInstance.delete(`/list-items/${id}`),
   createToDoItem: (item: object) => axiosInstance.post("/todo-items", item),
+  updateTodoItem: (id: string, item: object) =>
+    axiosInstance.put(`/todo-items/${id}`, item),
+  deleteToDoItem: (id: number) => axiosInstance.delete(`/todo-items/${id}`),
   //   getCalendmy: () =>
   //     axiosInstance.get(
   //       `/calend-mies?populate[0]=events,shopping_lists,to_do&populate[1]=shopping_lists.list_items,to_do.todo_items`

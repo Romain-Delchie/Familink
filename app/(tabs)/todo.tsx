@@ -9,7 +9,6 @@ import {
 import React, { useEffect, useState, useContext } from "react";
 import AppContext from "../context/appContext";
 import DraggableFlatList from "react-native-draggable-flatlist";
-import Icon from "react-native-vector-icons/Entypo";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -18,7 +17,7 @@ import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
 
 export default function Todo() {
-  const { family } = useContext(AppContext);
+  const { family, updateFamily } = useContext(AppContext);
   const { user } = useUser();
   const [sortedTodos, setSortedTodos] = useState(family?.todo_items);
   const [initialData, setInitialData] = useState(sortedTodos);
@@ -104,15 +103,18 @@ export default function Todo() {
       name: text,
       ranking: sortedTodos.length,
       author: user.imageUrl,
-      to_do: 1,
+      family: family?.documentId,
     };
-    API.addToDoItem({ data: newTask })
+    console.log(newTask);
+
+    API.createToDoItem({ data: newTask })
       .then((res) => {
         const updatedData = [
           ...sortedTodos,
           { ...newTask, id: res.data.data.id },
         ];
         setInitialData(updatedData);
+        updateFamily({ ...family, todo_items: updatedData });
         setModalVisible(false);
       })
       .catch((error) => {
@@ -161,13 +163,24 @@ export default function Todo() {
             height: "100%",
           }}
         >
-          <Text>Nom de la tâche :</Text>
+          <Text
+            style={{
+              color: Colors.bronze11,
+              fontFamily: "AmaticBold",
+              fontSize: 28,
+              marginBottom: 10,
+            }}
+          >
+            Nom de la tâche :
+          </Text>
           <TextInput
             style={{
               height: 40,
               width: 200,
-              borderColor: "gray",
+              borderColor: Colors.bronze11,
+              borderRadius: 15,
               marginBottom: 50,
+              backgroundColor: Colors.bronze7,
               borderWidth: 1,
             }}
             onChangeText={(text) => onChangeText(text)}
@@ -176,15 +189,15 @@ export default function Todo() {
             <TouchableOpacity
               onPress={() => handleAddTask()}
               style={{
-                backgroundColor: "green",
-                borderRadius: 5,
+                backgroundColor: Colors.bronze10,
+                borderRadius: 10,
                 padding: 15,
                 margin: 30,
                 width: 100,
                 alignItems: "center",
               }}
             >
-              <AntDesign name="check" size={30} color="white" />
+              <AntDesign name="check" size={30} color="green" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
@@ -192,12 +205,12 @@ export default function Todo() {
                 padding: 15,
                 margin: 30,
                 width: 100,
-                backgroundColor: "red",
+                backgroundColor: Colors.bronze9,
                 alignItems: "center",
-                borderRadius: 5,
+                borderRadius: 10,
               }}
             >
-              <Entypo name="cross" size={30} color="white" />
+              <Entypo name="cross" size={30} color="darkred" />
             </TouchableOpacity>
           </View>
         </View>
@@ -231,7 +244,7 @@ export default function Todo() {
             <TouchableOpacity
               onPress={() => handleDelete(item.id)} // Define a function to handle the delete action
             >
-              <Icon
+              <Entypo
                 name="trash" // Replace with the name of the Entypo icon you want to use
                 size={24}
                 color={Colors.bronze12} // Customize the icon color

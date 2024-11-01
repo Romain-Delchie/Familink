@@ -97,7 +97,19 @@ export default function ListItem({ list }) {
       marginBottom: 50,
       marginTop: 30,
     },
-
+    confirmationButton: {
+      backgroundColor: Colors.bronze8,
+      width: 200,
+      height: 40,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    confirmationBtnText: {
+      color: Colors.bronze12,
+      fontFamily: "AmaticBold",
+      fontSize: 20,
+    },
     textItem: {
       color: Colors.bronze12,
       fontSize: 26,
@@ -249,9 +261,29 @@ export default function ListItem({ list }) {
         />
         <Modal animationType="slide" transparent={true} visible={confirmDelete}>
           <View style={styles.modalDeleteList}>
-            <Text>Êtes-vous sûr de vouloir supprimer la liste ?</Text>
-            <Button title="Oui" onPress={() => handleDeleteList(listState)} />
-            <Button title="Non" onPress={() => setConfirmDelete(false)} />
+            <Text
+              style={{
+                fontFamily: "AmaticBold",
+                color: Colors.bronze11,
+                fontSize: 28,
+                textAlign: "center",
+                width: 250,
+              }}
+            >
+              Êtes-vous sûr de vouloir supprimer la liste ?
+            </Text>
+            <TouchableOpacity
+              style={styles.confirmationButton}
+              onPress={() => handleDeleteList(listState)}
+            >
+              <Text style={styles.confirmationBtnText}>Oui</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.confirmationButton}
+              onPress={() => setConfirmDelete(false)}
+            >
+              <Text style={styles.confirmationBtnText}>Non</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       </View>
@@ -410,7 +442,8 @@ export default function ListItem({ list }) {
             backgroundColor: Colors.bronze4,
             height: "100%",
             justifyContent: "center",
-            gap: 60,
+            alignItems: "center",
+            gap: 20,
           }}
         >
           <Text
@@ -419,22 +452,26 @@ export default function ListItem({ list }) {
               fontSize: 30,
               fontFamily: "AmaticBold",
               width: 200,
+              marginBottom: 20,
               marginHorizontal: "auto",
               textAlign: "center",
             }}
           >
             Etes vous sur de vouloir supprimer TOUS les produits de la liste
           </Text>
-          <Button
-            title="Oui"
+          <TouchableOpacity
+            style={styles.confirmationButton}
             onPress={handleDeleteAllItem}
             color={Colors.bronze6}
-          />
-          <Button
-            color={Colors.bronze6}
-            title="Non"
+          >
+            <Text style={styles.confirmationBtnText}>Oui</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.confirmationButton}
             onPress={() => setModalDeleteAll(false)}
-          />
+          >
+            <Text style={styles.confirmationBtnText}>non</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </ScrollView>

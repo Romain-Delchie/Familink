@@ -63,10 +63,10 @@ export default function Todo() {
       return item;
     });
     updatedData.map((item) => {
-      API.updateToDoItems(item.id, { data: item })
+      API.updateTodoItem(item.documentId, { data: { ranking: item.ranking } })
         .then((res) => {
           setInitialData(updatedData);
-          updateToDoItems(updatedData);
+          updateFamily({ ...family, todo_items: updatedData });
         })
         .catch((error) => {
           console.error(error.response.data);

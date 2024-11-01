@@ -65,18 +65,42 @@ const calendar = () => {
     dayNamesShort: ["Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."],
   };
   LocaleConfig.defaultLocale = "fr";
+  interface Event {
+    documentId: string;
+    name: string;
+    begin: string;
+    end: string;
+    instruction: string;
+    author: string;
+    date: string;
+  }
+
+  interface APIResponse {
+    data: {
+      data: Event[];
+    };
+  }
+
+  interface Appointment {
+    id: string;
+    name: string;
+    begin: string;
+    end: string;
+    instruction: string;
+    author: string;
+  }
 
   useEffect(() => {
     const newItems: { [key: string]: any[] } = {};
     family &&
       API.getEventsByFamily(family.documentId).then((res) => {
         res.data.data
-          .sort((a, b) => {
+          .sort((a: Event, b: Event) => {
             const timeA = new Date(`1970-01-01T${a.begin}`);
             const timeB = new Date(`1970-01-01T${b.begin}`);
             return timeA.getTime() - timeB.getTime();
           })
-          .map((event) => {
+          .map((event: Event) => {
             newItems[event.date] = [
               ...(newItems[event.date] || []),
               {
@@ -94,8 +118,8 @@ const calendar = () => {
       });
   }, [family, agendaKey]);
 
-  const addAppointment = (date, appointment) => {
-    const newItems = { ...items };
+  const addAppointment = (date: string, appointment: Appointment) => {
+    const newItems: { [key: string]: Appointment[] } = { ...items };
     newItems[date] = [...(newItems[date] || []), appointment];
     setItems(newItems);
   };
@@ -107,15 +131,18 @@ const calendar = () => {
     setIsActionItemVisible((prev) => !prev);
   };
 
-  const handleDeleteItem = (id) => {
+  const handleDeleteItem = (id: string) => {
     API.deleteEvent(id)
       .then((res) => {
         setAgendaKey((prevKey) => prevKey + 1);
         setIconVisible(false);
-        updateFamily({
-          ...family,
-          events: family.events.filter((event) => event.documentId !== id),
-        });
+        if (family) {
+          updateFamily({
+            ...family,
+            id: family.id || "",
+            events: family.events.filter((event) => event.documentId !== id),
+          });
+        }
       })
       .catch((err) => console.error(err.message));
   };

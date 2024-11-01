@@ -13,6 +13,7 @@ type event = {
 type todoItem = {
   ranking: number;
   name: string;
+  author: string;
 };
 
 type FamilyType = {

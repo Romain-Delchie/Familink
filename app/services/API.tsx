@@ -17,35 +17,35 @@ const axiosInstance = axios.create({
 
 const API = {
   getFamilies: () => axiosInstance.get("/families?populate=*"),
-  getOneFamily: (id: number) => axiosInstance.get(`/families/${id}`),
+  getOneFamily: (id: string) => axiosInstance.get(`/families/${id}`),
   getOneFamilyByUser: (email: string) =>
     axiosInstance.get(
       `/families?filters[user_lists][email][$eq]=${email}&populate[events]=*&populate[shopping_lists][populate][list_items]=*&populate[todo_items]=*`
     ),
   createFamily: (family: object) => axiosInstance.post("/families", family),
-  updateFamily: (id: number, family: object) =>
+  updateFamily: (id: string, family: object) =>
     axiosInstance.put(`/families/${id}`, family),
   getUsers: () => axiosInstance.get("/user-lists"),
-  getUser: (id: number) => axiosInstance.get(`/user-lists/${id}`),
+  getUser: (id: string) => axiosInstance.get(`/user-lists/${id}`),
   getUserByEmail: (email: string) =>
     axiosInstance.get(`/user-lists?filters[email][$eq]=${email}`),
   createUser: (user: object) => axiosInstance.post("/user-lists", user),
-  updateUser: (id: number, user: object) =>
+  updateUser: (id: string, user: object) =>
     axiosInstance.put(`/user-lists/${id}`, user),
   getEventsByFamily: (id: string) =>
     axiosInstance.get(`/events?filters[family][documentId][$eq]=${id}`),
   createEvent: (event: object) => axiosInstance.post("/events", event),
-  deleteEvent: (id: number) => axiosInstance.delete(`/events/${id}`),
+  deleteEvent: (id: string) => axiosInstance.delete(`/events/${id}`),
   addShoppingList: (list: object) =>
     axiosInstance.post("/shopping-lists", list),
-  deleteShoppingList: (id: number) =>
+  deleteShoppingList: (id: string) =>
     axiosInstance.delete(`/shopping-lists/${id}`),
   createItemToList: (item: object) => axiosInstance.post("/list-items", item),
-  deleteItemFromList: (id: number) => axiosInstance.delete(`/list-items/${id}`),
+  deleteItemFromList: (id: string) => axiosInstance.delete(`/list-items/${id}`),
   createToDoItem: (item: object) => axiosInstance.post("/todo-items", item),
   updateTodoItem: (id: string, item: object) =>
     axiosInstance.put(`/todo-items/${id}`, item),
-  deleteToDoItem: (id: number) => axiosInstance.delete(`/todo-items/${id}`),
+  deleteToDoItem: (id: string) => axiosInstance.delete(`/todo-items/${id}`),
   //   getCalendmy: () =>
   //     axiosInstance.get(
   //       `/calend-mies?populate[0]=events,shopping_lists,to_do&populate[1]=shopping_lists.list_items,to_do.todo_items`

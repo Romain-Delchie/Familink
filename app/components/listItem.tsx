@@ -18,6 +18,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 
 export default function ListItem({ list }) {
+  const { family, updateFamily } = useContext(AppContext);
   const [listState, setListState] = useState(list);
   const { user } = useUser();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -98,10 +99,20 @@ export default function ListItem({ list }) {
     },
 
     textItem: {
-      color: Colors.bronze11,
-      fontSize: 24,
+      color: Colors.bronze12,
+      fontSize: 26,
       fontFamily: "AmaticBold",
       width: 200,
+    },
+    textItemTop: {
+      marginBottom: 15,
+    },
+    textItemQty: {
+      color: Colors.bronze11,
+      fontFamily: "AmaticBold",
+      position: "absolute",
+      left: 30,
+      bottom: 0,
     },
     textAdd: {
       fontFamily: "BowlbyOne",
@@ -109,17 +120,20 @@ export default function ListItem({ list }) {
     },
     textItemDelete: {
       color: "darkred",
-      fontSize: 20,
-      fontFamily: "AmaticBold",
+      fontSize: 13,
+      fontFamily: "BowlbyOne",
       width: 200,
     },
   });
   const handleDeleteList = (oneList) => {
-    API.deleteShoppingList(oneList.id)
+    API.deleteShoppingList(oneList.documentId)
       .then(() => {
-        updateShoppingLists(
-          shoppingLists.filter((item) => item.id !== oneList.id)
-        );
+        updateFamily({
+          ...family,
+          shopping_lists: family.shopping_lists.filter(
+            (item) => item.documentId !== oneList.documentId
+          ),
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -129,20 +143,30 @@ export default function ListItem({ list }) {
   };
 
   const handleDeleteItem = (item) => {
+    console.log("item", item);
+
     API.deleteItemFromList(item.id)
       .then(() => {
-        const newItems = listState.listItems.filter(
-          (listItem) => listItem.id !== item.id
+        const newItems = listState.list_items.filter(
+          (listItem) => listItem.documentId !== item.documentId
         );
+        console.log("newItems", newItems);
+
         const newShoppingList = {
           ...listState,
-          listItems: newItems,
+          list_items: newItems,
         };
-        updateShoppingLists(
-          shoppingLists.map((oneList) =>
-            oneList.id === newShoppingList.id ? newShoppingList : oneList
-          )
-        );
+
+        console.log("neuuu", newShoppingList);
+
+        updateFamily({
+          ...family,
+          shopping_lists: family.shopping_lists.map((oneList) =>
+            oneList.documentId === newShoppingList.documentId
+              ? newShoppingList
+              : oneList
+          ),
+        });
         setListState(newShoppingList);
       })
       .catch((err) => {
@@ -156,22 +180,26 @@ export default function ListItem({ list }) {
       data: {
         name: newItem.name,
         quantity: newItem.quantity,
-        shopping_list: listState.id,
-        author: user.imageUrl,
+        shopping_list: listState.documentId,
+        author: user?.imageUrl,
       },
     };
-    API.addItemToList(itemToAdd)
+
+    API.createItemToList(itemToAdd)
       .then((res) => {
-        itemToAdd.data.id = res.data.data.id;
+        itemToAdd.data.id = res.data.data.documentId;
         const newShoppingList = {
           ...listState,
-          listItems: [...listState.listItems, itemToAdd.data],
+          list_items: [...listState.list_items, itemToAdd.data],
         };
-        updateShoppingLists(
-          shoppingLists.map((oneList) =>
-            oneList.id === newShoppingList.id ? newShoppingList : oneList
-          )
-        );
+        updateFamily({
+          ...family,
+          shopping_lists: family.shopping_lists.map((oneList) =>
+            oneList.documentId === newShoppingList.id
+              ? newShoppingList
+              : oneList
+          ),
+        });
         setListState(newShoppingList);
       })
       .catch((err) => {
@@ -221,10 +249,22 @@ export default function ListItem({ list }) {
           </View>
         </Modal>
       </View>
-      {listState &&
+
+      {listState.list_items &&
         listState.list_items.map((item, index) => (
           <View key={index} style={styles.item}>
-            <Text style={styles.textItem}>{item.name}</Text>
+            <Text
+              style={
+                item.quantity
+                  ? [styles.textItem, styles.textItemTop]
+                  : styles.textItem
+              }
+            >
+              {item.name}
+            </Text>
+            {item.quantity && (
+              <Text style={styles.textItemQty}>qté: {item.quantity}</Text>
+            )}
             <Image
               source={{ uri: item.author }}
               style={{
@@ -244,8 +284,17 @@ export default function ListItem({ list }) {
             />
           </View>
         ))}
-      {list.list_items.length === 0 && (
-        <Text>Aucun produit dans cette liste</Text>
+      {listState.list_items.length === 0 && (
+        <Text
+          style={{
+            color: Colors.bronze11,
+            fontFamily: "AmaticBold",
+            fontSize: 26,
+            marginBottom: 50,
+          }}
+        >
+          Aucun produit dans cette liste
+        </Text>
       )}
       <TouchableOpacity
         style={styles.addItem}

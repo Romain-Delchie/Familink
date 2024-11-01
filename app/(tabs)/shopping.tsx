@@ -36,8 +36,8 @@ export default function Lists() {
       color: Colors.bronze11,
     },
   });
-  console.log("family", family?.shopping_lists);
-  console.log("family", typeof family?.shopping_lists);
+  // console.log("family", family?.shopping_lists);
+  // console.log("family", typeof family?.shopping_lists);
 
   if (!family) return <Text>Chargement...</Text>;
 
@@ -61,8 +61,6 @@ export default function Lists() {
       >
         {family &&
           family.shopping_lists.map((list, index) => {
-            console.log("list", list);
-
             return (
               <Tab.Screen
                 name={

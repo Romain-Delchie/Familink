@@ -9,7 +9,7 @@ import Colors from "@/constants/Colors";
 
 export default function AddList() {
   const [nameList, setNameList] = useState("");
-  const { family } = useContext(AppContext);
+  const { family, updateFamily } = useContext(AppContext);
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
@@ -20,26 +20,29 @@ export default function AddList() {
         const list = {
           data: {
             name: nameList,
-            calend_my: 1,
+            family: family?.documentId,
           },
         };
+
         const res = await API.addShoppingList(list);
+
         const newShoppingLists = [
-          ...shoppingLists,
+          ...family.shopping_lists,
           {
-            name: res.data.data.attributes.name,
-            id: res.data.data.id,
-            listItems: [],
+            name: res.data.data.name,
+            id: res.data.data.documentId,
+            list_items: [],
           },
         ];
-        updateShoppingLists(newShoppingLists);
+        updateFamily({ ...family, shopping_lists: newShoppingLists });
 
         setNameList("");
 
         const listIndex =
-          shoppingLists.length > 1
-            ? (shoppingLists.length + 1).toString()
-            : res.data.data.attributes.name;
+          family.shopping_lists.length > 1
+            ? (family.shopping_lists.length + 1).toString()
+            : res.data.data.data.name;
+
         setTimeout(() => {
           navigation.navigate(listIndex);
         }, 200);

@@ -212,21 +212,27 @@ export default function ListItem({ list }) {
   };
 
   const handleDeleteAllItem = () => {
-    listState.listItems.map((item) => {
-      API.deleteItemFromList(item.id).catch((err) => {
+    console.log("listState", listState);
+
+    listState.list_items.map((item) => {
+      API.deleteItemFromList(item.documentId).catch((err) => {
         console.error(err);
         alert(err);
       });
     });
     const newShoppingList = {
       ...listState,
-      listItems: [],
+      list_items: [],
     };
-    updateShoppingLists(
-      shoppingLists.map((oneList) =>
-        oneList.id === newShoppingList.id ? newShoppingList : oneList
-      )
-    );
+    updateFamily({
+      ...family,
+      shopping_lists: family.shopping_lists.map((oneList) =>
+        oneList.documentId === newShoppingList.documentId
+          ? newShoppingList
+          : oneList
+      ),
+    });
+
     setListState(newShoppingList);
     setModalDeleteAll(false);
   };

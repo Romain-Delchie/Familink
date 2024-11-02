@@ -168,8 +168,9 @@ const calendar = () => {
             todayTextColor: Colors.bronze6,
             dayTextColor: Colors.bronze11,
             textDisabledColor: Colors.bronze11,
-            dotColor: Colors.bronze6,
-            selectedDotColor: Colors.bronze11,
+            dotColor: "darkred",
+            dotStyle: { marginTop: 5, width: 5, height: 5 },
+            selectedDotColor: "darkred",
             arrowColor: Colors.bronze6,
             disabledArrowColor: Colors.bronze11,
             monthTextColor: Colors.bronze11,
@@ -201,12 +202,12 @@ const calendar = () => {
           }}
           // Callback that gets called on day press
           onDayPress={(day) => {
-            setSelectedDate(XDate(day.dateString));
+            setSelectedDate(new XDate(day.dateString));
           }}
           // Callback that gets called when day changes while scrolling agenda list
           onDayChange={(day) => {}}
           firstDay={1}
-          selected={selectedDate}
+          selected={selectedDate.toString()}
           // Fonction pour rendre un élément de rendez-vous
           refreshing={false}
           showWeekNumbers={true}
@@ -214,7 +215,6 @@ const calendar = () => {
           showOnlySelectedDayItems={onlyOneDay}
           onRefresh={() => {
             // updateFamily({ ...family, events: events });
-            console.log(family.events);
 
             setIconVisible(false);
             setAgendaKey(agendaKey + 1);
@@ -225,7 +225,8 @@ const calendar = () => {
           // renderDay={(day, item) => {
           //   return <View />;
           // }}
-          renderItem={(item) => {
+          renderItem={(reservation: any, isFirst: boolean) => {
+            const item = reservation as Appointment;
             return (
               <View style={{ backgroundColor: Colors.bronze1 }}>
                 <TouchableOpacity
@@ -297,7 +298,7 @@ const calendar = () => {
                         right: 16,
                         bottom: -10,
                         alignItems: "center",
-                        justifyContent: "end",
+                        justifyContent: "flex-end",
                         height: "100%",
                         marginTop: 10,
                       }}

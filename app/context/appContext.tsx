@@ -14,6 +14,7 @@ type todoItem = {
   ranking: number;
   name: string;
   author: string;
+  documentId: string;
 };
 
 type FamilyType = {
@@ -21,9 +22,15 @@ type FamilyType = {
   name: string;
   members: object[];
   events: event[];
-  shopping_lists: object[];
+  shopping_lists: ShoppingList[];
   todo_items: todoItem[];
   documentId: string;
+};
+
+type ShoppingList = {
+  name: string;
+  id: string;
+  list_items: object[];
 };
 
 interface AppContextProps {

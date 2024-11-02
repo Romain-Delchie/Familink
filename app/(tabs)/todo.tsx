@@ -16,6 +16,18 @@ import API from "../services/API";
 import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
 
+interface TodoItem {
+  documentId: string;
+  name: string;
+  ranking: number;
+  author: string;
+}
+
+interface DragEndParams {
+  data: TodoItem[];
+  from: number;
+  to: number;
+}
 export default function Todo() {
   const { family, updateFamily } = useContext(AppContext);
   const { user } = useUser();
@@ -25,16 +37,25 @@ export default function Todo() {
   const [text, onChangeText] = useState("");
   // Triez les tâches par importance (ranking)
   useEffect(() => {
-    const myData = [...initialData];
+    const myData = [...(initialData || [])];
     setSortedTodos(myData.sort((a, b) => a.ranking - b.ranking));
   }, [initialData]);
+  useEffect(() => {
+    console.log(
+      "sortedTodos",
+      sortedTodos?.map((item) => item.name + " " + item.ranking)
+    );
+  }, [sortedTodos]);
 
-  const getColorForRanking = (ranking) => {
+  const getColorForRanking = (ranking: number): string => {
     const maxRanking = sortedTodos.length;
     const startColor = [20, 17, 16]; // RGB pour #141110
-    const endColor = [237, 224, 217]; // RGB pour #ede0d9
-
-    const interpolateColor = (start, end, percent) => {
+    const endColor = [174, 140, 126]; // RGB pour #ede0d9
+    const interpolateColor = (
+      start: number[],
+      end: number[],
+      percent: number
+    ): string => {
       const result = start.map((value, index) => {
         const delta = end[index] - value;
         return Math.round(value + delta * percent);
@@ -46,6 +67,10 @@ export default function Todo() {
     return hue;
   };
   const handleDragEnd = ({ data, from, to }) => {
+    console.log("data", data);
+    console.log("from", from);
+    console.log("to", to);
+
     const draggedItem = data.find((item) => item.ranking === from);
     const draggedItems = data.slice(from, to + 1);
     const updatedData = data.map((item) => {
@@ -63,7 +88,9 @@ export default function Todo() {
       return item;
     });
     updatedData.map((item) => {
-      API.updateTodoItem(item.documentId, { data: { ranking: item.ranking } })
+      API.updateTodoItem(item.documentId, {
+        data: { ranking: item.ranking, name: item.name, author: item.author },
+      })
         .then((res) => {
           setInitialData(updatedData);
           updateFamily({ ...family, todo_items: updatedData });
@@ -121,7 +148,7 @@ export default function Todo() {
       .then((res) => {
         const updatedData = [
           ...sortedTodos,
-          { ...newTask, id: res.data.data.id },
+          { ...newTask, documentId: res.data.data.documentId },
         ];
         setInitialData(updatedData);
         updateFamily({ ...family, todo_items: updatedData });

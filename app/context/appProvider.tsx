@@ -5,6 +5,7 @@ import React, { useState, ReactNode } from "react";
 type todoItem = {
   ranking: number;
   name: string;
+  author: string;
 };
 
 type event = {
@@ -23,9 +24,15 @@ interface FamilyType {
   name: string;
   members: object[];
   events: event[];
-  shopping_lists: object[];
+  shopping_lists: ShoppingList[];
   todo_items: todoItem[];
   documentId: string;
+}
+// Define ShoppingList
+interface ShoppingList {
+  name: string;
+  id: string;
+  list_items: object[];
 }
 
 interface AppProviderProps {

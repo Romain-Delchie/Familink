@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React, { useContext } from "react";
 import AppContext from "../context/appContext";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -36,8 +36,6 @@ export default function Lists() {
       color: Colors.bronze11,
     },
   });
-  // console.log("family", family?.shopping_lists);
-  // console.log("family", typeof family?.shopping_lists);
 
   if (!family) return <Text>Chargement...</Text>;
 

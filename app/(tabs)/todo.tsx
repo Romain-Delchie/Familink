@@ -216,6 +216,8 @@ export default function Todo() {
               borderRadius: 15,
               marginBottom: 50,
               backgroundColor: Colors.bronze7,
+              color: Colors.bronze12,
+              paddingLeft: 10,
               borderWidth: 1,
             }}
             onChangeText={(text) => onChangeText(text)}

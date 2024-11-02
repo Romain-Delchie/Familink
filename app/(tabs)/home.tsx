@@ -29,7 +29,6 @@ const home = () => {
     BowlbyOne: require("../../assets/fonts/BowlbyOneSC-Regular.ttf"),
     Overlock: require("../../assets/fonts/Overlock-Regular.ttf"),
   });
-  console.log(family?.shopping_lists);
 
   useEffect(() => {
     if (loaded || error) {

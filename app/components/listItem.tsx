@@ -278,8 +278,6 @@ export default function ListItem({ list }: ListItemProps) {
     }
   };
   const handleDeleteAllItem = () => {
-    console.log("listState", listState);
-
     listState.list_items.map((item) => {
       API.deleteItemFromList(item.documentId).catch((err) => {
         console.error(err);

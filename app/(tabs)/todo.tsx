@@ -61,10 +61,6 @@ export default function Todo() {
     return hue;
   };
   const handleDragEnd = ({ data, from, to }: DragEndParams) => {
-    console.log("data", data);
-    console.log("from", from);
-    console.log("to", to);
-
     const draggedItem = data.find((item) => item.ranking === from);
     const draggedItems = data.slice(from, to + 1);
     const updatedData = data.map((item) => {

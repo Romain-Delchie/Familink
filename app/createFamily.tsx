@@ -52,8 +52,6 @@ const CreateFamily = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log("userConnected", userConnected);
-    console.log(isKnown);
     if (userConnected !== null) {
       userConnected === undefined
         ? setIsKnown("no")
@@ -90,7 +88,6 @@ const CreateFamily = () => {
           email: user?.emailAddresses[0].emailAddress,
         },
       });
-      console.log("userResponse", userResponse);
 
       // Crée la famille
       const familyResponse = await API.createFamily({
@@ -113,8 +110,6 @@ const CreateFamily = () => {
           family: [createdFamily.documentId],
         },
       }).then((res) => {
-        console.log("res.data.data", res.data.data);
-
         updateUserFamily(res.data.data);
       });
 
@@ -132,7 +127,6 @@ const CreateFamily = () => {
 
   const handleJoinFamily = async () => {
     // Logique pour rejoindre une famille
-    console.log("Rejoindre la famille avec ID :", typeof joinFamilyId);
 
     try {
       // Crée l'utilisateur (s'il n'existe pas déjà)
@@ -152,7 +146,7 @@ const CreateFamily = () => {
     } catch (error) {
       //Afficher une erreur
       setErrorMessage("Cet identifiant de famille n'existe pas");
-      console.log(error);
+      console.error(error);
     }
   };
 

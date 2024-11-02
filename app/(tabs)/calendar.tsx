@@ -187,9 +187,7 @@ const calendar = () => {
           pastScrollRange={10}
           futureScrollRange={12}
           // Callback that fires when the calendar is opened or closed
-          onCalendarToggled={(calendarOpened) => {
-            console.log(calendarOpened);
-          }}
+          onCalendarToggled={(calendarOpened) => {}}
           // Callback that gets called on day press
           onDayPress={(day) => {
             setSelectedDate(new XDate(day.dateString));

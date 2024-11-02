@@ -1,4 +1,10 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -9,8 +15,9 @@ import { useClerk, useOAuth } from "@clerk/clerk-expo";
 
 export default function login() {
   useWarmUpBrowser();
-  const [loaded, error] = useFonts({
+  const [fontsLoaded] = useFonts({
     Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
+    AmaticBold: require("../assets/fonts/AmaticSC-Bold.ttf"),
     BowlbyOne: require("../assets/fonts/BowlbyOneSC-Regular.ttf"),
     Overlock: require("../assets/fonts/Overlock-Regular.ttf"),
   });
@@ -35,13 +42,30 @@ export default function login() {
     }
   }, []);
   useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
+    async function prepare() {
+      if (!fontsLoaded) {
+        await SplashScreen.preventAutoHideAsync();
+      } else {
+        await SplashScreen.hideAsync();
+      }
     }
-  }, [loaded, error]);
+    prepare();
+  }, [fontsLoaded]);
 
-  if (!loaded && !error) {
-    return null;
+  if (!fontsLoaded) {
+    // Garde le splash screen d'Expo visible jusqu'à ce que la police soit chargée
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: Colors.bronze2,
+        }}
+      >
+        <ActivityIndicator size="large" color={Colors.bronze8} />
+      </View>
+    );
   }
 
   return (

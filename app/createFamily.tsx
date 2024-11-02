@@ -23,7 +23,7 @@ const CreateFamily = () => {
   }
 
   const router = useRouter();
-  const { updateUserFamily, updateFamily } = useContext(AppContext);
+  const { family, updateUserFamily, updateFamily } = useContext(AppContext);
   const [userConnected, setUserConnected] = useState<User | null>(null);
   const { user } = useUser();
   const [isKnown, setIsKnown] = useState("waiting");
@@ -34,14 +34,26 @@ const CreateFamily = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    // Empêche le splash screen de disparaître automatiquement
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+  const [fontsLoaded] = useFonts({
+    Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
+    AmaticBold: require("../assets/fonts/AmaticSC-Bold.ttf"),
+    BowlbyOne: require("../assets/fonts/BowlbyOneSC-Regular.ttf"),
+    Overlock: require("../assets/fonts/Overlock-Regular.ttf"),
+  });
+
+  useEffect(() => {
     if (user) {
       Promise.all([
         API.getOneFamilyByUser(user.emailAddresses[0].emailAddress),
         API.getUserByEmail(user.emailAddresses[0].emailAddress),
       ])
         .then(([familyRes, userRes]) => {
-          updateFamily(familyRes.data.data[0]);
+          console.log("Famille:", familyRes.data.data[0]);
 
+          updateFamily(familyRes.data.data[0]);
           updateUserFamily(userRes.data.data[0]);
           setUserConnected(userRes.data.data[0]);
         })
@@ -61,22 +73,21 @@ const CreateFamily = () => {
     }
   }, [userConnected]);
 
-  const [loaded, error] = useFonts({
-    Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
-    BowlbyOne: require("../assets/fonts/BowlbyOneSC-Regular.ttf"),
-    Overlock: require("../assets/fonts/Overlock-Regular.ttf"),
-  });
-
   useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
+    async function prepare() {
+      if (!fontsLoaded) {
+        await SplashScreen.preventAutoHideAsync();
+      } else {
+        await SplashScreen.hideAsync();
+      }
     }
-  }, [loaded, error]);
+    prepare();
+  }, [fontsLoaded]);
 
-  if (!loaded && !error) {
+  if (!fontsLoaded) {
+    // Garde le splash screen d'Expo visible jusqu'à ce que la police soit chargée
     return null;
   }
-
   const handleCreateFamily = async () => {
     try {
       // Crée l'utilisateur (s'il n'existe pas déjà)
@@ -130,7 +141,7 @@ const CreateFamily = () => {
 
     try {
       // Crée l'utilisateur (s'il n'existe pas déjà)
-      const userResponse = await API.createUser({
+      await API.createUser({
         data: {
           firstname: user?.firstName,
           lastname: user?.lastName,
@@ -150,15 +161,11 @@ const CreateFamily = () => {
     }
   };
 
-  // render
-
   if (isKnown === "waiting") {
     return (
-      <ActivityIndicator
-        style={{ margin: "auto" }}
-        size={50}
-        color={Colors.bronze11}
-      />
+      <View style={{ backgroundColor: Colors.bronze2, height: "100%" }}>
+        <ActivityIndicator size="large" color={Colors.bronze10} />
+      </View>
     );
   }
 
@@ -276,8 +283,20 @@ const CreateFamily = () => {
     );
   }
 
-  if (isKnown === "yes") {
+  if (isKnown === "yes" && userConnected?.profile !== "admin") {
     return <Redirect href={"/(tabs)/home"} />;
+  }
+
+  if (isKnown === "yes" && userConnected?.profile === "admin") {
+    if (
+      family?.user_lists?.find(
+        (user: { profile: string }) => user.profile === "asker"
+      )
+    ) {
+      return <Redirect href={"/confirmAsker"} />;
+    } else {
+      return <Redirect href={"/(tabs)/home"} />;
+    }
   }
 
   if (isKnown === "asker") {

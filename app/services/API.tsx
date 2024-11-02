@@ -15,7 +15,7 @@ const API = {
   getOneFamily: (id: string) => axiosInstance.get(`/families/${id}`),
   getOneFamilyByUser: (email: string) =>
     axiosInstance.get(
-      `/families?filters[user_lists][email][$eq]=${email}&populate[events]=*&populate[shopping_lists][populate][list_items]=*&populate[todo_items]=*`
+      `/families?filters[user_lists][email][$eq]=${email}&populate[events]=*&populate[user_lists]=*&populate[shopping_lists][populate][list_items]=*&populate[todo_items]=*`
     ),
   createFamily: (family: object) => axiosInstance.post("/families", family),
   updateFamily: (id: string, family: object) =>
@@ -27,6 +27,7 @@ const API = {
   createUser: (user: object) => axiosInstance.post("/user-lists", user),
   updateUser: (id: string, user: object) =>
     axiosInstance.put(`/user-lists/${id}`, user),
+  deleteUser: (id: string) => axiosInstance.delete(`/user-lists/${id}`),
   getEventsByFamily: (id: string) =>
     axiosInstance.get(`/events?filters[family][documentId][$eq]=${id}`),
   createEvent: (event: object) => axiosInstance.post("/events", event),
@@ -41,6 +42,8 @@ const API = {
   updateTodoItem: (id: string, item: object) =>
     axiosInstance.put(`/todo-items/${id}`, item),
   deleteToDoItem: (id: string) => axiosInstance.delete(`/todo-items/${id}`),
+  getUsersbyOneFamily: (id: string) =>
+    axiosInstance.get(`/user-lists?filters[user_lists][family][$eq]=${id}`),
 };
 
 export default API;

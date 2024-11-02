@@ -22,9 +22,19 @@ type FamilyType = {
   name: string;
   members: object[];
   events: event[];
+  user_lists: userLists[];
   shopping_lists: ShoppingList[];
   todo_items: todoItem[];
   documentId: string;
+};
+
+type userLists = {
+  documentId: string;
+  email: string;
+  family: string;
+  id: number;
+  profile: string;
+  firstname: string;
 };
 
 type ShoppingList = {

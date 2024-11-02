@@ -2,12 +2,6 @@ import AppContext from "./appContext";
 
 import React, { useState, ReactNode } from "react";
 
-type todoItem = {
-  ranking: number;
-  name: string;
-  author: string;
-};
-
 type event = {
   documentId: string;
   name: string;
@@ -18,9 +12,16 @@ type event = {
   author: string;
 };
 
+type todoItem = {
+  ranking: number;
+  name: string;
+  author: string;
+  documentId: string;
+  id: number;
+};
 // Define FamilyType
 interface FamilyType {
-  id: string;
+  id: number;
   name: string;
   members: object[];
   events: event[];

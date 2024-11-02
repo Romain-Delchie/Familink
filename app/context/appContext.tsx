@@ -18,7 +18,7 @@ type todoItem = {
 };
 
 type FamilyType = {
-  id: string;
+  id: number;
   name: string;
   members: object[];
   events: event[];

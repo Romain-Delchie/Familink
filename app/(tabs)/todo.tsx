@@ -40,15 +40,9 @@ export default function Todo() {
     const myData = [...(initialData || [])];
     setSortedTodos(myData.sort((a, b) => a.ranking - b.ranking));
   }, [initialData]);
-  useEffect(() => {
-    console.log(
-      "sortedTodos",
-      sortedTodos?.map((item) => item.name + " " + item.ranking)
-    );
-  }, [sortedTodos]);
 
   const getColorForRanking = (ranking: number): string => {
-    const maxRanking = sortedTodos.length;
+    const maxRanking = sortedTodos?.length || 0;
     const startColor = [20, 17, 16]; // RGB pour #141110
     const endColor = [174, 140, 126]; // RGB pour #ede0d9
     const interpolateColor = (
@@ -66,7 +60,7 @@ export default function Todo() {
     const hue = interpolateColor(startColor, endColor, ranking / maxRanking);
     return hue;
   };
-  const handleDragEnd = ({ data, from, to }) => {
+  const handleDragEnd = ({ data, from, to }: DragEndParams) => {
     console.log("data", data);
     console.log("from", from);
     console.log("to", to);
@@ -92,8 +86,10 @@ export default function Todo() {
         data: { ranking: item.ranking, name: item.name, author: item.author },
       })
         .then((res) => {
-          setInitialData(updatedData);
-          updateFamily({ ...family, todo_items: updatedData });
+          setInitialData(updatedData as TodoItem[]);
+          if (family) {
+            updateFamily({ ...family, todo_items: updatedData });
+          }
         })
         .catch((error) => {
           console.error(error.response.data);
@@ -102,17 +98,17 @@ export default function Todo() {
     });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     // Filter out the item with the specified id
 
-    const updatedData = sortedTodos.filter((item) => item.documentId !== id);
+    const updatedData = sortedTodos?.filter((item) => item.documentId !== id);
     // After filtering, update the rankings of the remaining items
-    const updatedDataWithRanking = updatedData.map((item, index) => ({
+    const updatedDataWithRanking = updatedData?.map((item, index) => ({
       ...item,
       ranking: index,
     }));
 
-    updatedDataWithRanking.map((item) => {
+    updatedDataWithRanking?.map((item) => {
       const dataToUpdate = {
         data: {
           name: item.name,
@@ -123,7 +119,7 @@ export default function Todo() {
 
       API.updateTodoItem(item.documentId, dataToUpdate)
         .then((res) => {
-          setInitialData(updatedDataWithRanking);
+          setInitialData(updatedDataWithRanking as TodoItem[]);
         })
         .catch((error) => {
           console.error(error.response.data);
@@ -132,27 +128,29 @@ export default function Todo() {
     });
     API.deleteToDoItem(id);
     setInitialData(updatedDataWithRanking);
-    updateFamily({ ...family, todo_items: updatedDataWithRanking });
+    if (updatedDataWithRanking && family) {
+      updateFamily({ ...family, todo_items: updatedDataWithRanking });
+    }
   };
 
   const handleAddTask = () => {
     const newTask = {
       name: text,
-      ranking: sortedTodos.length,
-      author: user.imageUrl,
+      ranking: sortedTodos?.length || 0,
+      author: user?.imageUrl,
       family: family?.documentId,
     };
-    console.log(newTask);
 
     API.createToDoItem({ data: newTask })
       .then((res) => {
-        const updatedData = [
-          ...sortedTodos,
-          { ...newTask, documentId: res.data.data.documentId },
-        ];
-        setInitialData(updatedData);
-        updateFamily({ ...family, todo_items: updatedData });
-        setModalVisible(false);
+        if (sortedTodos) {
+          const updatedData = [...sortedTodos, { ...res.data.data }];
+          setInitialData(updatedData as TodoItem[]);
+          if (family) {
+            updateFamily({ ...family, todo_items: updatedData });
+          }
+          setModalVisible(false);
+        }
       })
       .catch((error) => {
         console.error(error.response.data);
@@ -253,8 +251,8 @@ export default function Todo() {
         </View>
       </Modal>
       <DraggableFlatList
-        data={sortedTodos}
-        renderItem={({ item, index, drag, isActive }) => (
+        data={sortedTodos || []}
+        renderItem={({ item, drag, isActive }) => (
           <TouchableOpacity
             style={{
               height: 100,
@@ -289,7 +287,7 @@ export default function Todo() {
             </TouchableOpacity>
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => `draggable-item-${item.id}`}
+        keyExtractor={(item) => `draggable-item-${item.documentId}`}
         onDragEnd={handleDragEnd}
       />
     </View>

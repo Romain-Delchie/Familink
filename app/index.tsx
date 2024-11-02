@@ -1,5 +1,5 @@
 import { Redirect } from "expo-router";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 
 export default function Index() {

@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ViewStyle,
-  FlexAlignType,
-} from "react-native";
+import { View, TouchableOpacity, ViewStyle, FlexAlignType } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
 import Colors from "@/constants/Colors";

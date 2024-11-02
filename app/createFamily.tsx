@@ -23,9 +23,9 @@ const CreateFamily = () => {
   }
 
   const router = useRouter();
-  const { userFamily, updateUserFamily, updateFamily } = useContext(AppContext);
+  const { updateUserFamily, updateFamily } = useContext(AppContext);
   const [userConnected, setUserConnected] = useState<User | null>(null);
-  const { isSignedIn, user, isLoaded } = useUser();
+  const { user } = useUser();
   const [isKnown, setIsKnown] = useState("waiting");
   const [modalVisibleCreate, setModalVisibleCreate] = useState(false);
   const [modalVisibleJoin, setModalVisibleJoin] = useState(false);

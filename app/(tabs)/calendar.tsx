@@ -4,11 +4,7 @@ import AppContext from "../context/appContext";
 import Colors from "@/constants/Colors";
 import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  Calendar as CalendarComponent,
-  Agenda,
-  LocaleConfig,
-} from "react-native-calendars";
+import { Agenda, LocaleConfig } from "react-native-calendars";
 import XDate from "xdate";
 import API from "../services/API";
 import ModalAddAppointment from "../components/modalAddAppointment";
@@ -18,8 +14,8 @@ const calendar = () => {
   const [items, setItems] = useState<{ [key: string]: any[] }>();
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new XDate());
-  const [isActionItemVisible, setIsActionItemVisible] = useState(false);
-  const [isloading, setIsLoading] = useState(true);
+  const [, setIsActionItemVisible] = useState(false);
+  const [, setIsLoading] = useState(true);
   const [onlyOneDay, setOnlyOneDay] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [iconVisible, setIconVisible] = useState(false);
@@ -75,12 +71,6 @@ const calendar = () => {
     date: string;
   }
 
-  interface APIResponse {
-    data: {
-      data: Event[];
-    };
-  }
-
   interface Appointment {
     id: string;
     name: string;
@@ -118,18 +108,18 @@ const calendar = () => {
       });
   }, [family, agendaKey]);
 
-  const addAppointment = (date: string, appointment: Appointment) => {
-    const newItems: { [key: string]: Appointment[] } = { ...items };
-    newItems[date] = [...(newItems[date] || []), appointment];
-    setItems(newItems);
-  };
+  // const addAppointment = (date: string, appointment: Appointment) => {
+  //   const newItems: { [key: string]: Appointment[] } = { ...items };
+  //   newItems[date] = [...(newItems[date] || []), appointment];
+  //   setItems(newItems);
+  // };
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const toggleActionItem = () => {
-    setIsActionItemVisible((prev) => !prev);
-  };
+  // const toggleActionItem = () => {
+  //   setIsActionItemVisible((prev) => !prev);
+  // };
 
   const handleDeleteItem = (id: string) => {
     API.deleteEvent(id)

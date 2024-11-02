@@ -9,7 +9,6 @@ import Colors from "@/constants/Colors";
 
 export default function Lists() {
   const Tab = createMaterialTopTabNavigator();
-  const { user } = useUser();
   const { family } = useContext(AppContext);
 
   const styles = StyleSheet.create({

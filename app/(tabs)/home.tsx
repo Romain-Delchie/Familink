@@ -21,7 +21,7 @@ const home = () => {
   const today = moment().format("dddd Do MMMM YYYY");
   const todayDate = moment().format("YYYY-MM-DD");
   const { user } = useUser();
-  const [handleRefresh, setHandleRefresh] = React.useState(false);
+  const [, setHandleRefresh] = React.useState(false);
 
   const [loaded, error] = useFonts({
     Amatic: require("../../assets/fonts/AmaticSC-Regular.ttf"),

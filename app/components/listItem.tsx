@@ -4,11 +4,10 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  Button,
   Modal,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import AppContext from "../context/appContext";
 import { Entypo } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";

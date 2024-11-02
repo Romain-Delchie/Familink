@@ -34,7 +34,9 @@ export default function ModalAddAppointment({
   const [startHour, setStartHour] = useState("");
   const [endHour, setEndHour] = useState("");
   const [startOrEnd, setStartOrEnd] = useState("");
-  const [mode, setMode] = useState<string | undefined>(undefined);
+  const [mode, setMode] = useState<
+    "date" | "time" | "datetime" | "countdown" | undefined
+  >(undefined);
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [instruction, setInstruction] = useState("");
@@ -60,31 +62,35 @@ export default function ModalAddAppointment({
     }));
   };
 
-  const onChange = (event: object, selectedDate: Date) => {
+  const onChange = (event: any, selectedDate?: Date) => {
     setError(false);
     setShow(false);
-    const currentDate = selectedDate as Date;
-    setDate(currentDate);
-    if (startOrEnd == "start") {
-      setStartHour(
-        (selectedDate.getHours() < 10 ? "0" : "") +
-          selectedDate.getHours() +
-          ":" +
-          (selectedDate.getMinutes() < 10 ? "0" : "") +
-          selectedDate.getMinutes()
-      );
-    } else if (startOrEnd == "end") {
-      setEndHour(
-        (selectedDate.getHours() < 10 ? "0" : "") +
-          selectedDate.getHours() +
-          ":" +
-          (selectedDate.getMinutes() < 10 ? "0" : "") +
-          selectedDate.getMinutes()
-      );
+    if (selectedDate) {
+      const currentDate = selectedDate;
+      setDate(currentDate);
+      if (startOrEnd == "start") {
+        setStartHour(
+          (selectedDate.getHours() < 10 ? "0" : "") +
+            selectedDate.getHours() +
+            ":" +
+            (selectedDate.getMinutes() < 10 ? "0" : "") +
+            selectedDate.getMinutes()
+        );
+      } else if (startOrEnd == "end") {
+        setEndHour(
+          (selectedDate.getHours() < 10 ? "0" : "") +
+            selectedDate.getHours() +
+            ":" +
+            (selectedDate.getMinutes() < 10 ? "0" : "") +
+            selectedDate.getMinutes()
+        );
+      }
     }
   };
 
-  const showMode = (currentMode: string) => {
+  const showMode = (
+    currentMode: "date" | "time" | "datetime" | "countdown"
+  ) => {
     setShow(true);
     setMode(currentMode);
   };
@@ -125,15 +131,15 @@ export default function ModalAddAppointment({
       setError(true);
       return;
     } else {
-      console.log(family.events);
-
       API.createEvent(appointment)
         .then((response) => {
           setAgendaKey((prevKey) => prevKey + 1);
-          updateFamily({
-            ...family,
-            events: [...family.events, response.data.data],
-          });
+          if (family) {
+            updateFamily({
+              ...family,
+              events: [...family.events, response.data.data],
+            });
+          }
 
           onClose(); // Fermez la modal
         })
@@ -276,7 +282,6 @@ export default function ModalAddAppointment({
       />
       <View style={styles.btnValContainer}>
         <TouchableOpacity
-          title="Ajouter le rendez-vous"
           onPress={handleAddAppointment}
           style={styles.btnValidate}
         >
@@ -296,7 +301,6 @@ export default function ModalAddAppointment({
           mode={mode}
           is24Hour={true}
           onChange={onChange}
-          style={{ textColor: Colors.bronze3 }}
         />
       )}
       <Text style={{ color: "red" }}>

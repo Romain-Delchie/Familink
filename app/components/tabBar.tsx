@@ -1,27 +1,33 @@
-import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ViewStyle,
+  FlexAlignType,
+} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
 import Colors from "@/constants/Colors";
 
-const tabBar = ({ state, descriptors, navigation }) => {
-  const icons = {
-    home: (props) => (
-      <AntDesign name="home" size={24} color={Colors.bronze6} {...props} />
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+
+const tabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+  interface IconProps {
+    color: string;
+    size: number;
+  }
+
+  interface Icons {
+    [key: string]: (props: IconProps) => JSX.Element;
+  }
+
+  const icons: Icons = {
+    home: (props: IconProps) => <AntDesign name="home" {...props} />,
+    calendar: (props: IconProps) => <AntDesign name="calendar" {...props} />,
+    shopping: (props: IconProps) => (
+      <AntDesign name="shoppingcart" {...props} />
     ),
-    calendar: (props) => (
-      <AntDesign name="calendar" size={24} color={Colors.bronze6} {...props} />
-    ),
-    shopping: (props) => (
-      <AntDesign
-        name="shoppingcart"
-        size={24}
-        color={Colors.bronze6}
-        {...props}
-      />
-    ),
-    todo: (props) => (
-      <AntDesign name="bars" size={24} color={Colors.bronze6} {...props} />
-    ),
+    todo: (props: IconProps) => <AntDesign name="bars" {...props} />,
   };
   return (
     <View style={styles.tabBar}>
@@ -79,16 +85,15 @@ const tabBar = ({ state, descriptors, navigation }) => {
 
 const styles = {
   tabBar: {
-    flexDirection: "row",
-    position: "absolute",
+    flexDirection: "row" as ViewStyle["flexDirection"],
+    position: "absolute" as ViewStyle["position"],
     bottom: 10,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: "space-between" as ViewStyle["justifyContent"],
+    alignItems: "center" as FlexAlignType, // Correction ici
     backgroundColor: Colors.bronze4,
     marginHorizontal: 20,
     borderRadius: 25,
     paddingVertical: 5,
-    borderCurve: "continuous",
     shadowColor: Colors.bronze12,
     shadowOffset: { width: 0, height: 10 },
     shadowRadius: 10,
@@ -96,11 +101,11 @@ const styles = {
   },
   tabBarItem: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as FlexAlignType, // Correction ici également
+    justifyContent: "center" as ViewStyle["justifyContent"],
     borderRadius: 10,
     margin: 10,
-    backgroundColor: "none",
+    backgroundColor: "transparent",
   },
 };
 

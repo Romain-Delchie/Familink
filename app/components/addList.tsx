@@ -4,13 +4,13 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import API from "../services/API";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import Colors from "@/constants/Colors";
 
 export default function AddList() {
   const [nameList, setNameList] = useState("");
   const { family, updateFamily } = useContext(AppContext);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   const handleSubmit = async () => {
     if (nameList === "") {
@@ -27,25 +27,28 @@ export default function AddList() {
         const res = await API.addShoppingList(list);
 
         const newShoppingLists = [
-          ...family.shopping_lists,
+          ...(family?.shopping_lists || []),
           {
             name: res.data.data.name,
-            id: res.data.data.documentId,
+            documentId: res.data.data.documentId,
+            id: res.data.data.id,
             list_items: [],
           },
         ];
-        updateFamily({ ...family, shopping_lists: newShoppingLists });
+        if (family) {
+          updateFamily({ ...family, shopping_lists: newShoppingLists });
+        }
 
         setNameList("");
 
         const listIndex =
-          family.shopping_lists.length > 1
-            ? (family.shopping_lists.length + 1).toString()
-            : res.data.data.data.name;
+          (family?.shopping_lists?.length ?? 0) > 1
+            ? ((family?.shopping_lists?.length ?? 0) + 1).toString()
+            : res.data.data.name;
 
-        setTimeout(() => {
-          navigation.navigate(listIndex);
-        }, 200);
+        // setTimeout(() => {
+        //   navigation.navigate(listIndex);
+        // }, 200);
       } catch (err) {
         console.error(err);
       }

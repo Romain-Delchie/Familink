@@ -29,8 +29,17 @@ type FamilyType = {
 
 type ShoppingList = {
   name: string;
-  id: string;
-  list_items: object[];
+  documentId?: string;
+  id: number;
+  list_items: listItems[];
+};
+
+type listItems = {
+  documentId?: string;
+  name: string;
+  quantity?: string;
+  author: string;
+  id: number;
 };
 
 interface AppContextProps {

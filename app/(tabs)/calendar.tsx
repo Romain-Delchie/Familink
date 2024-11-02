@@ -139,7 +139,7 @@ const calendar = () => {
         if (family) {
           updateFamily({
             ...family,
-            id: family.id || "",
+            id: family.id || 0,
             events: family.events.filter((event) => event.documentId !== id),
           });
         }

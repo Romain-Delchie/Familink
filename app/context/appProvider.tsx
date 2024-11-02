@@ -17,7 +17,6 @@ type todoItem = {
   name: string;
   author: string;
   documentId: string;
-  id: number;
 };
 // Define FamilyType
 interface FamilyType {
@@ -32,8 +31,17 @@ interface FamilyType {
 // Define ShoppingList
 interface ShoppingList {
   name: string;
-  id: string;
-  list_items: object[];
+  documentId?: string;
+  id: number;
+  list_items: listItems[];
+}
+
+interface listItems {
+  documentId?: string;
+  name: string;
+  quantity?: string;
+  author: string;
+  id: number;
 }
 
 interface AppProviderProps {

@@ -67,7 +67,24 @@ export default function Lists() {
                     : list.name
                 }
                 key={index}
-                children={() => <ListItem list={list} />}
+                children={() => (
+                  <ListItem
+                    list={
+                      list as {
+                        documentId: string;
+                        name: string;
+                        id: number;
+                        list_items: {
+                          documentId: string;
+                          name: string;
+                          quantity?: string;
+                          author: string;
+                          id: number;
+                        }[];
+                      }
+                    }
+                  />
+                )}
               />
             );
           })}

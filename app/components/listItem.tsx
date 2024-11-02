@@ -17,7 +17,22 @@ import API from "../services/API";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 
-export default function ListItem({ list }) {
+interface ListItemProps {
+  list: {
+    documentId: string;
+    name: string;
+    id: number;
+    list_items: {
+      documentId: string;
+      name: string;
+      quantity?: string;
+      author: string;
+      id: number;
+    }[];
+  };
+}
+
+export default function ListItem({ list }: ListItemProps) {
   const { family, updateFamily } = useContext(AppContext);
   const [listState, setListState] = useState(list);
   const { user } = useUser();
@@ -137,92 +152,132 @@ export default function ListItem({ list }) {
       width: 200,
     },
   });
-  const handleDeleteList = (oneList) => {
+  interface ShoppingList {
+    documentId?: string;
+    name: string;
+    id: number;
+    list_items: {
+      documentId?: string;
+      name: string;
+      quantity?: string;
+      author: string;
+      id: number;
+    }[];
+  }
+
+  interface HandleDeleteListProps {
+    documentId: string;
+  }
+
+  const handleDeleteList = (oneList: HandleDeleteListProps) => {
     API.deleteShoppingList(oneList.documentId)
       .then(() => {
-        updateFamily({
-          ...family,
-          shopping_lists: family.shopping_lists.filter(
-            (item) => item.documentId !== oneList.documentId
-          ),
-        });
+        if (family) {
+          updateFamily({
+            ...family,
+            shopping_lists: family.shopping_lists.filter(
+              (item) => item.documentId !== oneList.documentId
+            ),
+          });
+        }
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         console.error(err);
         alert(err);
       });
     setConfirmDelete(false);
   };
 
-  const handleDeleteItem = (item) => {
-    console.log("item", item);
+  interface Item {
+    documentId?: string;
+    name: string;
+    quantity?: string;
+    author: string;
+    id: number;
+  }
 
-    API.deleteItemFromList(item.id)
+  const handleDeleteItem = (item: Item) => {
+    if (item.documentId === undefined) return;
+    API.deleteItemFromList(item.documentId)
       .then(() => {
         const newItems = listState.list_items.filter(
           (listItem) => listItem.documentId !== item.documentId
         );
-        console.log("newItems", newItems);
 
         const newShoppingList = {
           ...listState,
           list_items: newItems,
         };
-
-        console.log("neuuu", newShoppingList);
-
-        updateFamily({
-          ...family,
-          shopping_lists: family.shopping_lists.map((oneList) =>
-            oneList.documentId === newShoppingList.documentId
-              ? newShoppingList
-              : oneList
-          ),
-        });
+        if (family) {
+          updateFamily({
+            ...family,
+            shopping_lists: family.shopping_lists.map((oneList) =>
+              oneList.documentId === newShoppingList.documentId
+                ? newShoppingList
+                : oneList
+            ),
+          });
+        }
         setListState(newShoppingList);
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         console.error(err);
         alert(err);
       });
   };
 
   const handleAddItem = () => {
-    const itemToAdd = {
-      data: {
-        name: newItem.name,
-        quantity: newItem.quantity,
-        shopping_list: listState.documentId,
-        author: user?.imageUrl,
-      },
-    };
-
-    API.createItemToList(itemToAdd)
-      .then((res) => {
-        itemToAdd.data.id = res.data.data.documentId;
-        const newShoppingList = {
-          ...listState,
-          list_items: [...listState.list_items, itemToAdd.data],
+    if (user) {
+      if (listState.documentId === undefined) return;
+      const itemToAdd: {
+        data: {
+          name: string;
+          quantity: string;
+          shopping_list: string;
+          author: string;
+          id: number;
+          documentId: string;
         };
-        updateFamily({
-          ...family,
-          shopping_lists: family.shopping_lists.map((oneList) =>
-            oneList.documentId === newShoppingList.id
-              ? newShoppingList
-              : oneList
-          ),
+      } = {
+        data: {
+          name: newItem.name,
+          quantity: newItem.quantity,
+          shopping_list: listState.documentId,
+          author: user.imageUrl,
+          id: listState.list_items.length + 1,
+          documentId: "randomId",
+        },
+      };
+
+      API.createItemToList(itemToAdd)
+        .then((res) => {
+          itemToAdd.data.id = res.data.data.id;
+          itemToAdd.data.documentId = res.data.data.documentId;
+          const newShoppingList = {
+            ...listState,
+            list_items: [...listState.list_items, itemToAdd.data],
+          };
+          if (family) {
+            updateFamily({
+              ...family,
+              shopping_lists: family.shopping_lists.map((oneList) =>
+                oneList.documentId === newShoppingList.documentId
+                  ? newShoppingList
+                  : oneList
+              ),
+            });
+          }
+          setListState(newShoppingList);
+        })
+        .catch((err) => {
+          console.error(err);
+          alert(err);
         });
-        setListState(newShoppingList);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert(err);
-      });
 
-    setModalVisible(false);
-    setNewItem({ name: "", quantity: "" });
+      setModalVisible(false);
+      setNewItem({ name: "", quantity: "" });
+    }
   };
-
   const handleDeleteAllItem = () => {
     console.log("listState", listState);
 
@@ -232,18 +287,25 @@ export default function ListItem({ list }) {
         alert(err);
       });
     });
-    const newShoppingList = {
+    const newShoppingList: {
+      documentId: string;
+      name: string;
+      id: number;
+      list_items: [];
+    } = {
       ...listState,
       list_items: [],
     };
-    updateFamily({
-      ...family,
-      shopping_lists: family.shopping_lists.map((oneList) =>
-        oneList.documentId === newShoppingList.documentId
-          ? newShoppingList
-          : oneList
-      ),
-    });
+    if (family) {
+      updateFamily({
+        ...family,
+        shopping_lists: family.shopping_lists.map((oneList) =>
+          oneList.documentId === newShoppingList.documentId
+            ? newShoppingList
+            : oneList
+        ),
+      });
+    }
 
     setListState(newShoppingList);
     setModalDeleteAll(false);
@@ -462,7 +524,6 @@ export default function ListItem({ list }) {
           <TouchableOpacity
             style={styles.confirmationButton}
             onPress={handleDeleteAllItem}
-            color={Colors.bronze6}
           >
             <Text style={styles.confirmationBtnText}>Oui</Text>
           </TouchableOpacity>

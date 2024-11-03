@@ -55,18 +55,28 @@ interface listItems {
   id: number;
 }
 
+interface UserFamily {
+  documentId: string;
+  email: string;
+  family: string;
+  firstname: string;
+  lastname: string;
+  id: number;
+  profile: string;
+}
+
 interface AppProviderProps {
   children: ReactNode;
 }
 
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [userFamily, setUserFamily] = useState<object | null>(null);
+  const [userFamily, setUserFamily] = useState<UserFamily | null>(null);
   const [family, setFamily] = useState<FamilyType | null>(null);
   const [events, setEvents] = useState(null);
   const [shoppingLists, setShoppingLists] = useState(null);
   const [toDoItems, setToDoItems] = useState(null);
 
-  const updateUserFamily = (newUser: object) => {
+  const updateUserFamily = (newUser: UserFamily) => {
     setUserFamily(newUser);
   };
 

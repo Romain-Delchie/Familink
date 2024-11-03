@@ -52,10 +52,20 @@ type listItems = {
   id: number;
 };
 
-interface AppContextProps {
-  userFamily: object | null;
+type UserFamily = {
+  documentId: string;
+  email: string;
+  family: string;
+  firstname: string;
+  lastname: string;
+  id: number;
+  profile: string;
+};
 
-  updateUserFamily: (newUser: object) => void;
+interface AppContextProps {
+  userFamily: UserFamily | null;
+
+  updateUserFamily: (newUser: UserFamily) => void;
 
   family: FamilyType | null;
 

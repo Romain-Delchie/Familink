@@ -19,7 +19,7 @@ import moment from "moment";
 import "moment/locale/fr";
 
 const home = () => {
-  const { family } = useContext(AppContext);
+  const { family, userFamily } = useContext(AppContext);
   const today = moment().format("dddd Do MMMM YYYY");
   const todayDate = moment().format("YYYY-MM-DD");
   const { user } = useUser();
@@ -90,7 +90,7 @@ const home = () => {
                 fontFamily: "Overlock",
               }}
             >
-              {user?.fullName}
+              {userFamily?.firstname}
             </Text>
           </View>
         </View>

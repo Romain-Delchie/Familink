@@ -1,19 +1,40 @@
-import { View, TouchableOpacity, ViewStyle, FlexAlignType } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  ViewStyle,
+  FlexAlignType,
+  Text,
+} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useContext, useEffect, useState } from "react";
+import AppContext from "../context/appContext";
 import React from "react";
 import Colors from "@/constants/Colors";
-
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
-const tabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
-  interface IconProps {
-    color: string;
-    size: number;
-  }
+interface IconProps {
+  color: string;
+  size: number;
+}
 
-  interface Icons {
-    [key: string]: (props: IconProps) => JSX.Element;
-  }
+interface Asker {
+  documentId: string;
+  firstname: string;
+  email: string;
+  profile: string;
+}
+
+interface Icons {
+  [key: string]: (props: IconProps) => JSX.Element;
+}
+const tabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+  const { family } = useContext(AppContext);
+  const [askers, setAskers] = useState<Asker[]>([]);
+  useEffect(() => {
+    if (family) {
+      setAskers(family.user_lists.filter((asker) => asker.profile === "asker"));
+    }
+  }, [family]);
 
   const icons: Icons = {
     home: (props: IconProps) => <AntDesign name="home" {...props} />,
@@ -68,9 +89,27 @@ const tabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
             onLongPress={onLongPress}
           >
             {icons[route.name]({
-              color: isFocused ? Colors.bronze12 : Colors.bronze10,
+              color:
+                route.name === "settings" && askers.length > 0
+                  ? "red"
+                  : isFocused
+                  ? Colors.bronze12
+                  : Colors.bronze10,
               size: isFocused ? 30 : 24,
             })}
+            {route.name === "settings" && (
+              <Text
+                style={{
+                  position: "absolute",
+                  color: "red",
+                  right: 10,
+                  top: -17,
+                  fontFamily: "AmaticBold",
+                }}
+              >
+                {askers.length > 0 ? askers.length : ""}
+              </Text>
+            )}
           </TouchableOpacity>
         );
       })}

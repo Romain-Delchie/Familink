@@ -22,6 +22,7 @@ const tabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
       <AntDesign name="shoppingcart" {...props} />
     ),
     todo: (props: IconProps) => <AntDesign name="bars" {...props} />,
+    settings: (props: IconProps) => <AntDesign name="setting" {...props} />,
   };
   return (
     <View style={styles.tabBar}>

@@ -6,12 +6,14 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Share,
 } from "react-native";
+import Modal from "react-native-modal";
 import React, { useContext, useEffect } from "react";
 import { useUser } from "@clerk/clerk-expo";
 import Colors from "@/constants/Colors";
 import AppContext from "../context/appContext";
-import { Feather } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import * as SplashScreen from "expo-splash-screen";
 import moment from "moment";
 import "moment/locale/fr";
@@ -21,7 +23,7 @@ const home = () => {
   const today = moment().format("dddd Do MMMM YYYY");
   const todayDate = moment().format("YYYY-MM-DD");
   const { user } = useUser();
-  const [, setHandleRefresh] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
 
   const [loaded, error] = useFonts({
     Amatic: require("../../assets/fonts/AmaticSC-Regular.ttf"),
@@ -29,6 +31,20 @@ const home = () => {
     BowlbyOne: require("../../assets/fonts/BowlbyOneSC-Regular.ttf"),
     Overlock: require("../../assets/fonts/Overlock-Regular.ttf"),
   });
+
+  const shareContent = async (content: string) => {
+    try {
+      await Share.share({
+        message: content,
+      });
+    } catch (error) {
+      console.error("Erreur lors du partage:", error);
+    }
+  };
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   useEffect(() => {
     if (loaded || error) {
@@ -79,11 +95,12 @@ const home = () => {
           </View>
         </View>
         <TouchableOpacity
+          style={{ marginBottom: 5 }}
           onPress={() => {
-            setHandleRefresh((prev) => !prev);
+            setModalVisible(true);
           }}
         >
-          <Feather name="refresh-ccw" size={24} color={Colors.bronze11} />
+          <AntDesign name="adduser" size={35} color={Colors.bronze11} />
         </TouchableOpacity>
       </View>
       <View style={styles.family}>
@@ -257,6 +274,83 @@ const home = () => {
           )}
         </View>
       </View>
+      <Modal
+        isVisible={modalVisible}
+        onSwipeComplete={toggleModal} // Fermeture du modal lorsqu'on swipe
+        swipeDirection={["down"]} // Direction du swipe pour fermer
+        animationIn="slideInUp" // Animation pour l'ouverture
+        animationOut="slideOutDown" // Animation pour la fermeture
+        onBackdropPress={toggleModal} // Fermeture du modal lorsqu'on clique en dehors
+      >
+        <View
+          style={{
+            bottom: 0,
+            width: "100%",
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            borderStyle: "solid",
+            borderColor: Colors.bronze6,
+            borderBottomWidth: 0,
+            borderWidth: 3,
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: Colors.bronze10,
+            height: "50%",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 24,
+              color: Colors.bronze3,
+              fontFamily: "AmaticBold",
+              textAlign: "center",
+            }}
+          >
+            Pour ajouter un membre à votre famille, vous devez lui fournir l'ID
+            de votre famille suivant :
+          </Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: Colors.bronze3,
+              padding: 10,
+              borderRadius: 10,
+              marginTop: 20,
+            }}
+            onPress={() => shareContent(family.documentId)}
+          >
+            <Text
+              style={{
+                fontSize: 24,
+                color: Colors.bronze12,
+                fontFamily: "Amatic",
+              }}
+            >
+              {family.documentId}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              top: 10,
+              right: 20,
+            }}
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                color: Colors.bronze3,
+                fontFamily: "BowblyOne",
+              }}
+            >
+              X
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };

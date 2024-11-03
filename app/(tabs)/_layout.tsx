@@ -10,6 +10,7 @@ export default function _layout() {
       <Tabs.Screen name="calendar" options={{ headerShown: false }} />
       <Tabs.Screen name="shopping" options={{ headerShown: false }} />
       <Tabs.Screen name="todo" options={{ headerShown: false }} />
+      <Tabs.Screen name="settings" options={{ headerShown: false }} />
     </Tabs>
   );
 }

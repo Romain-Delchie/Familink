@@ -51,8 +51,6 @@ const CreateFamily = () => {
         API.getUserByEmail(user.emailAddresses[0].emailAddress),
       ])
         .then(([familyRes, userRes]) => {
-          console.log("Famille:", familyRes.data.data[0]);
-
           updateFamily(familyRes.data.data[0]);
           updateUserFamily(userRes.data.data[0]);
           setUserConnected(userRes.data.data[0]);

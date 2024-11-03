@@ -68,26 +68,28 @@ const settings = () => {
           width: "100%",
         }}
       >
-        <TouchableOpacity
-          onPress={() => navigation.navigate("confirmAsker" as never)}
-          style={{
-            backgroundColor: Colors.bronze11,
-            padding: 20,
-            borderRadius: 5,
-            margin: 10,
-          }}
-        >
-          <Text
+        {family.user_lists.find((asker) => asker.profile === "asker") && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("confirmAsker" as never)}
             style={{
-              fontFamily: "AmaticBold",
-              fontSize: 26,
-              color: "red",
-              textAlign: "center",
+              backgroundColor: Colors.bronze11,
+              padding: 20,
+              borderRadius: 5,
+              margin: 10,
             }}
           >
-            Vous avez des membres à valider ici
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: "AmaticBold",
+                fontSize: 26,
+                color: "red",
+                textAlign: "center",
+              }}
+            >
+              Vous avez des membres à valider ici
+            </Text>
+          </TouchableOpacity>
+        )}
         <View
           style={{
             justifyContent: "space-around",

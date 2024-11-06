@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 import AppContext from "../context/appContext";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ListItem from "../components/listItem";
-import { useUser } from "@clerk/clerk-expo";
 import AddList from "../components/addList";
 import Colors from "@/constants/Colors";
 

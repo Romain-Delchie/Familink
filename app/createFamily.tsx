@@ -36,6 +36,7 @@ const CreateFamily = () => {
   useEffect(() => {
     // Empêche le splash screen de disparaître automatiquement
     SplashScreen.preventAutoHideAsync();
+    console.log("Splash screen is prevented from hiding");
   }, []);
   const [fontsLoaded] = useFonts({
     Amatic: require("../assets/fonts/AmaticSC-Regular.ttf"),
@@ -45,6 +46,8 @@ const CreateFamily = () => {
   });
 
   useEffect(() => {
+    console.log("User:", user);
+
     if (user) {
       Promise.all([
         API.getOneFamilyByUser(user.emailAddresses[0].emailAddress),
@@ -57,6 +60,7 @@ const CreateFamily = () => {
         })
         .catch((err) => {
           console.error("Erreur API:", err);
+          console.log("Error details:", JSON.stringify(err, null, 2));
         });
     }
   }, [user]);
@@ -161,7 +165,14 @@ const CreateFamily = () => {
 
   if (isKnown === "waiting") {
     return (
-      <View style={{ backgroundColor: Colors.bronze2, height: "100%" }}>
+      <View
+        style={{
+          backgroundColor: Colors.bronze2,
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" color={Colors.bronze10} />
       </View>
     );

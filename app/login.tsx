@@ -29,16 +29,18 @@ export default function login() {
       signOut();
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow({
-          redirectUrl: Linking.createURL("/createFamily", { scheme: "myapp" }),
+          redirectUrl: Linking.createURL("createFamily", { scheme: "myapp" }),
         });
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
       } else {
         // Use signIn or signUp for next steps such as MFA
+        console.log("OAuth flow completed without creating a session");
       }
     } catch (err) {
       console.error("OAuth error", err);
+      console.log("Error details:", JSON.stringify(err, null, 2));
     }
   }, []);
   useEffect(() => {

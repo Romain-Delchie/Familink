@@ -3,11 +3,10 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   Modal,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../context/appContext";
 import { Entypo } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
@@ -15,6 +14,8 @@ import { TextInput } from "react-native-gesture-handler";
 import API from "../services/API";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
+import { Picker } from "@react-native-picker/picker";
+import Item from "./item";
 
 interface ListItemProps {
   list: {
@@ -22,11 +23,11 @@ interface ListItemProps {
     name: string;
     id: number;
     list_items: {
-      documentId: string;
+      documentId?: string;
       name: string;
       quantity?: string;
       author: string;
-      id: number;
+      id?: number;
     }[];
   };
 }
@@ -36,9 +37,15 @@ export default function ListItem({ list }: ListItemProps) {
   const [listState, setListState] = useState(list);
   const { user } = useUser();
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [newItem, setNewItem] = useState({ name: "", quantity: "" });
+  const [newItem, setNewItem] = useState({
+    name: "",
+    quantity: "",
+    category: "",
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalDeleteAll, setModalDeleteAll] = useState(false);
+  const [filteredItems, setFilteredItems] = useState(list.list_items);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const styles = StyleSheet.create({
     listTitleContainer: {
@@ -78,16 +85,6 @@ export default function ListItem({ list }: ListItemProps) {
       justifyContent: "center",
       alignItems: "center",
       gap: 10,
-    },
-    item: {
-      flexDirection: "row",
-      borderRadius: 5,
-      alignItems: "center",
-      justifyContent: "space-between",
-      backgroundColor: Colors.bronze5,
-      padding: 10,
-      width: 300,
-      height: 70,
     },
     addItem: {
       flexDirection: "row",
@@ -130,9 +127,6 @@ export default function ListItem({ list }: ListItemProps) {
       fontFamily: "AmaticBold",
       width: 200,
     },
-    textItemTop: {
-      marginBottom: 15,
-    },
     textItemQty: {
       color: Colors.bronze11,
       fontFamily: "AmaticBold",
@@ -160,9 +154,34 @@ export default function ListItem({ list }: ListItemProps) {
       name: string;
       quantity?: string;
       author: string;
-      id: number;
+      id?: number;
     }[];
   }
+
+  const [selectedFilter, setSelectedFilter] = useState("all");
+
+  const handleFilterChange = (value, filterType) => {
+    if (filterType === "status") {
+      setSelectedFilter(value);
+    } else if (filterType === "category") {
+      setSelectedCategory(value); // Nouvelle variable d'état pour la catégorie
+    }
+  };
+
+  useEffect(() => {
+    let updatedItems = listState.list_items;
+    if (selectedFilter === "checked") {
+      updatedItems = updatedItems.filter((item) => item.checked);
+    } else if (selectedFilter === "unchecked") {
+      updatedItems = updatedItems.filter((item) => !item.checked);
+    }
+    if (selectedCategory !== "all") {
+      updatedItems = updatedItems.filter(
+        (item) => item.category === selectedCategory
+      );
+    }
+    setFilteredItems(updatedItems);
+  }, [selectedFilter, selectedCategory, listState]);
 
   interface HandleDeleteListProps {
     documentId: string;
@@ -187,64 +206,30 @@ export default function ListItem({ list }: ListItemProps) {
     setConfirmDelete(false);
   };
 
-  interface Item {
-    documentId?: string;
-    name: string;
-    quantity?: string;
-    author: string;
-    id: number;
-  }
-
-  const handleDeleteItem = (item: Item) => {
-    if (item.documentId === undefined) return;
-    API.deleteItemFromList(item.documentId)
-      .then(() => {
-        const newItems = listState.list_items.filter(
-          (listItem) => listItem.documentId !== item.documentId
-        );
-
-        const newShoppingList = {
-          ...listState,
-          list_items: newItems,
-        };
-        if (family) {
-          updateFamily({
-            ...family,
-            shopping_lists: family.shopping_lists.map((oneList) =>
-              oneList.documentId === newShoppingList.documentId
-                ? newShoppingList
-                : oneList
-            ),
-          });
-        }
-        setListState(newShoppingList);
-      })
-      .catch((err: Error) => {
-        console.error(err);
-        alert(err);
-      });
-  };
-
   const handleAddItem = () => {
     if (user) {
       if (listState.documentId === undefined) return;
+      if (newItem.name === "")
+        return alert("Veuillez renseigner un nom de produit");
       const itemToAdd: {
         data: {
           name: string;
           quantity: string;
           shopping_list: string;
+          category: string;
+          checked?: boolean;
           author: string;
-          id: number;
-          documentId: string;
+          id?: number;
+          documentId?: string;
         };
       } = {
         data: {
           name: newItem.name,
-          quantity: newItem.quantity,
+          checked: true,
+          quantity: newItem.quantity === "" ? "1" : newItem.quantity,
+          category: newItem.category === "" ? "Divers" : newItem.category,
           shopping_list: listState.documentId,
           author: user.imageUrl,
-          id: listState.list_items.length + 1,
-          documentId: "randomId",
         },
       };
 
@@ -271,18 +256,21 @@ export default function ListItem({ list }: ListItemProps) {
         .catch((err) => {
           console.error(err);
           alert(err);
+          console.log("error details:", JSON.stringify(err, null, 2));
         });
 
       setModalVisible(false);
-      setNewItem({ name: "", quantity: "" });
+      setNewItem({ name: "", quantity: "", category: "" });
     }
   };
   const handleDeleteAllItem = () => {
     listState.list_items.map((item) => {
-      API.deleteItemFromList(item.documentId).catch((err) => {
-        console.error(err);
-        alert(err);
-      });
+      if (item.documentId) {
+        API.deleteItemFromList(item.documentId).catch((err) => {
+          console.error(err);
+          alert(err);
+        });
+      }
     });
     const newShoppingList: {
       documentId: string;
@@ -346,53 +334,79 @@ export default function ListItem({ list }: ListItemProps) {
           </View>
         </Modal>
       </View>
-
-      {listState.list_items &&
-        listState.list_items.map((item, index) => (
-          <View key={index} style={styles.item}>
-            <Text
-              style={
-                item.quantity
-                  ? [styles.textItem, styles.textItemTop]
-                  : styles.textItem
-              }
-            >
-              {item.name}
-            </Text>
-            {item.quantity && (
-              <Text style={styles.textItemQty}>qté: {item.quantity}</Text>
-            )}
-            <Image
-              source={{ uri: item.author }}
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: 100,
-                position: "absolute",
-                right: 50,
-                top: 17,
-              }}
-            />
-            <Entypo
-              onPress={() => handleDeleteItem(item)}
-              name="trash"
-              size={24}
-              color={Colors.bronze11}
-            />
-          </View>
-        ))}
-      {listState.list_items.length === 0 && (
-        <Text
-          style={{
+      <View style={{ flexDirection: "row" }}>
+        <Picker
+          selectedValue={selectedFilter}
+          dropdownIconColor={Colors.bronze11}
+          onValueChange={(value) => handleFilterChange(value, "status")}
+          selectionColor={Colors.bronze12}
+          mode="dropdown"
+          itemStyle={{
             color: Colors.bronze11,
+            backgroundColor: Colors.bronze3,
             fontFamily: "AmaticBold",
-            fontSize: 26,
-            marginBottom: 50,
+            fontSize: 20,
+          }}
+          style={{
+            width: 150,
+            height: 50,
+            color: Colors.bronze11,
+            backgroundColor: Colors.bronze3,
+            borderRadius: 10,
+            marginBottom: 20,
+            fontFamily: "AmaticBold",
+            fontSize: 20,
           }}
         >
-          Aucun produit dans cette liste
-        </Text>
-      )}
+          <Picker.Item label="Tous" value="all" />
+          <Picker.Item label="Sélectionné" value="checked" />
+          <Picker.Item label="Non-sélectionné" value="unchecked" />
+        </Picker>
+
+        <Picker
+          selectedValue={selectedCategory}
+          dropdownIconColor={Colors.bronze11}
+          onValueChange={(value) => handleFilterChange(value, "category")}
+          selectionColor={Colors.bronze12}
+          mode="dropdown"
+          itemStyle={{
+            color: Colors.bronze11,
+            backgroundColor: Colors.bronze3,
+            fontFamily: "AmaticBold",
+            fontSize: 20,
+          }}
+          style={{
+            width: 250,
+            height: 50,
+            color: Colors.bronze11,
+            backgroundColor: Colors.bronze3,
+            borderRadius: 10,
+            marginBottom: 20,
+            fontFamily: "AmaticBold",
+            fontSize: 20,
+          }}
+        >
+          <Picker.Item label="Toutes les catégories" value="all" />
+          {filteredItems &&
+            [...new Set(list.list_items.map((item) => item.category))].map(
+              (category, index) => (
+                <Picker.Item key={index} label={category} value={category} />
+              )
+            )}
+        </Picker>
+      </View>
+      {filteredItems &&
+        filteredItems.map((item, index) => (
+          <Item
+            key={index}
+            item={item}
+            setListState={setListState}
+            family={family}
+            updateFamily={updateFamily}
+            listState={listState}
+          />
+        ))}
+
       <TouchableOpacity
         style={styles.addItem}
         onPress={() => setModalVisible(true)}
@@ -434,6 +448,29 @@ export default function ListItem({ list }: ListItemProps) {
             }}
             onChangeText={(text) => setNewItem({ ...newItem, name: text })}
             value={newItem.name}
+          />
+          <Text
+            style={{
+              fontFamily: "AmaticBold",
+              color: Colors.bronze11,
+              fontSize: 26,
+            }}
+          >
+            Ajouter un nom de categorie :
+          </Text>
+          <TextInput
+            style={{
+              height: 40,
+              borderColor: Colors.bronze8,
+              borderWidth: 1,
+              marginTop: 5,
+              marginBottom: 50,
+              borderRadius: 10,
+              backgroundColor: Colors.bronze5,
+              color: Colors.bronze12,
+            }}
+            onChangeText={(text) => setNewItem({ ...newItem, category: text })}
+            value={newItem.category}
           />
           <Text
             style={{

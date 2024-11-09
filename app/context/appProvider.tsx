@@ -52,7 +52,8 @@ interface listItems {
   name: string;
   quantity?: string;
   author: string;
-  id: number;
+  checked?: boolean;
+  id?: number;
 }
 
 interface UserFamily {

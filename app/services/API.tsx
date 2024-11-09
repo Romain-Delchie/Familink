@@ -38,6 +38,8 @@ const API = {
     axiosInstance.delete(`/shopping-lists/${id}`),
   createItemToList: (item: object) => axiosInstance.post("/list-items", item),
   deleteItemFromList: (id: string) => axiosInstance.delete(`/list-items/${id}`),
+  updateItemFromList: (id: string, item: object) =>
+    axiosInstance.put(`/list-items/${id}`, item),
   createToDoItem: (item: object) => axiosInstance.post("/todo-items", item),
   updateTodoItem: (id: string, item: object) =>
     axiosInstance.put(`/todo-items/${id}`, item),

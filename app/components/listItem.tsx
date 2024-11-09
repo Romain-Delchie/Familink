@@ -54,14 +54,14 @@ export default function ListItem({ list }: ListItemProps) {
       alignItems: "center",
       paddingLeft: 20,
       width: 270,
-      height: 70,
+      height: 50,
       backgroundColor: Colors.bronze3,
-      marginBottom: 30,
+      marginBottom: 10,
       paddingRight: 11,
       position: "absolute",
       borderBottomEndRadius: 10,
       borderTopRightRadius: 10,
-      top: 50,
+      top: 30,
       left: 0,
     },
     listTitle: {
@@ -80,7 +80,8 @@ export default function ListItem({ list }: ListItemProps) {
     },
     itemContainer: {
       backgroundColor: Colors.bronze2,
-      paddingTop: 150,
+      paddingTop: 100,
+      paddingBottom: 100,
       flexGrow: 1,
       justifyContent: "center",
       alignItems: "center",
@@ -93,8 +94,8 @@ export default function ListItem({ list }: ListItemProps) {
       justifyContent: "space-between",
       backgroundColor: Colors.bronze8,
       padding: 10,
-      width: 300,
-      height: 70,
+      width: "40%",
+      height: 50,
     },
     deleteAllItem: {
       flexDirection: "row",
@@ -103,10 +104,9 @@ export default function ListItem({ list }: ListItemProps) {
       justifyContent: "space-between",
       backgroundColor: Colors.bronze8,
       padding: 10,
-      width: 300,
-      height: 70,
-      marginBottom: 50,
-      marginTop: 30,
+      width: "40%",
+      height: 50,
+      marginBottom: 10,
     },
     confirmationButton: {
       backgroundColor: Colors.bronze8,
@@ -125,7 +125,6 @@ export default function ListItem({ list }: ListItemProps) {
       color: Colors.bronze12,
       fontSize: 26,
       fontFamily: "AmaticBold",
-      width: 200,
     },
     textItemQty: {
       color: Colors.bronze11,
@@ -136,13 +135,12 @@ export default function ListItem({ list }: ListItemProps) {
     },
     textAdd: {
       fontFamily: "BowlbyOne",
-      fontSize: 15,
+      fontSize: 10,
     },
     textItemDelete: {
       color: "darkred",
-      fontSize: 13,
+      fontSize: 10,
       fontFamily: "BowlbyOne",
-      width: 200,
     },
   });
   interface ShoppingList {
@@ -297,7 +295,7 @@ export default function ListItem({ list }: ListItemProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.itemContainer}>
+    <View style={styles.itemContainer}>
       <View style={styles.listTitleContainer}>
         <Text style={styles.listTitle}>{listState.name}</Text>
         <Entypo
@@ -395,143 +393,148 @@ export default function ListItem({ list }: ListItemProps) {
             )}
         </Picker>
       </View>
-      {filteredItems &&
-        filteredItems.map((item, index) => (
-          <Item
-            key={index}
-            item={item}
-            setListState={setListState}
-            family={family}
-            updateFamily={updateFamily}
-            listState={listState}
-          />
-        ))}
-
-      <TouchableOpacity
-        style={styles.addItem}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={[styles.textItem, styles.textAdd]}>
-          Ajouter un produit
-        </Text>
-        <Entypo name="plus" size={24} color={Colors.bronze11} />
-      </TouchableOpacity>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <View
-          style={{
-            height: "100%",
-            backgroundColor: Colors.bronze4,
-            padding: 30,
-            alignContent: "center",
-            justifyContent: "center",
-          }}
+      <ScrollView contentContainerStyle={{ gap: 10, width: "100%" }}>
+        {filteredItems &&
+          filteredItems.map((item, index) => (
+            <Item
+              key={index}
+              item={item}
+              setListState={setListState}
+              family={family}
+              updateFamily={updateFamily}
+              listState={listState}
+            />
+          ))}
+      </ScrollView>
+      <View style={{ flexDirection: "row", gap: 20 }}>
+        <TouchableOpacity
+          style={styles.addItem}
+          onPress={() => setModalVisible(true)}
         >
-          <Text
+          <Text style={[styles.textItem, styles.textAdd]}>Nouveau produit</Text>
+          <Entypo name="plus" size={24} color={Colors.bronze11} />
+        </TouchableOpacity>
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <View
             style={{
-              fontFamily: "AmaticBold",
-              color: Colors.bronze11,
-              fontSize: 26,
+              height: "100%",
+              backgroundColor: Colors.bronze4,
+              padding: 30,
+              alignContent: "center",
+              justifyContent: "center",
             }}
           >
-            Ajouter un nom de produit :
-          </Text>
-          <TextInput
-            style={{
-              height: 40,
-              borderColor: Colors.bronze8,
-              borderWidth: 1,
-              marginTop: 5,
-              marginBottom: 50,
-              borderRadius: 10,
-              backgroundColor: Colors.bronze5,
-              color: Colors.bronze12,
-            }}
-            onChangeText={(text) => setNewItem({ ...newItem, name: text })}
-            value={newItem.name}
-          />
-          <Text
-            style={{
-              fontFamily: "AmaticBold",
-              color: Colors.bronze11,
-              fontSize: 26,
-            }}
-          >
-            Ajouter un nom de categorie :
-          </Text>
-          <TextInput
-            style={{
-              height: 40,
-              borderColor: Colors.bronze8,
-              borderWidth: 1,
-              marginTop: 5,
-              marginBottom: 50,
-              borderRadius: 10,
-              backgroundColor: Colors.bronze5,
-              color: Colors.bronze12,
-            }}
-            onChangeText={(text) => setNewItem({ ...newItem, category: text })}
-            value={newItem.category}
-          />
-          <Text
-            style={{
-              fontFamily: "AmaticBold",
-              color: Colors.bronze11,
-              fontSize: 26,
-            }}
-          >
-            quantité: (facultatif)
-          </Text>
-          <TextInput
-            style={{
-              height: 40,
-              borderColor: Colors.bronze8,
-              borderWidth: 1,
-              marginTop: 5,
-              marginBottom: 50,
-              borderRadius: 10,
-              backgroundColor: Colors.bronze5,
-              color: Colors.bronze12,
-            }}
-            onChangeText={(text) => setNewItem({ ...newItem, quantity: text })}
-            value={newItem.quantity}
-          />
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <TouchableOpacity
-              onPress={handleAddItem}
+            <Text
               style={{
-                backgroundColor: Colors.bronze9,
-                borderRadius: 5,
-                padding: 15,
-                margin: 30,
-                width: 100,
-                alignItems: "center",
+                fontFamily: "AmaticBold",
+                color: Colors.bronze11,
+                fontSize: 26,
               }}
             >
-              <AntDesign name="check" size={30} color={Colors.bronze12} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
+              Ajouter un nom de produit :
+            </Text>
+            <TextInput
               style={{
-                padding: 15,
-                margin: 30,
-                width: 100,
-                backgroundColor: Colors.bronze8,
-                alignItems: "center",
-                borderRadius: 5,
+                height: 40,
+                borderColor: Colors.bronze8,
+                borderWidth: 1,
+                marginTop: 5,
+                marginBottom: 50,
+                borderRadius: 10,
+                backgroundColor: Colors.bronze5,
+                color: Colors.bronze12,
+              }}
+              onChangeText={(text) => setNewItem({ ...newItem, name: text })}
+              value={newItem.name}
+            />
+            <Text
+              style={{
+                fontFamily: "AmaticBold",
+                color: Colors.bronze11,
+                fontSize: 26,
               }}
             >
-              <Entypo name="cross" size={30} color={Colors.bronze12} />
-            </TouchableOpacity>
+              Ajouter un nom de categorie :
+            </Text>
+            <TextInput
+              style={{
+                height: 40,
+                borderColor: Colors.bronze8,
+                borderWidth: 1,
+                marginTop: 5,
+                marginBottom: 50,
+                borderRadius: 10,
+                backgroundColor: Colors.bronze5,
+                color: Colors.bronze12,
+              }}
+              onChangeText={(text) =>
+                setNewItem({ ...newItem, category: text })
+              }
+              value={newItem.category}
+            />
+            <Text
+              style={{
+                fontFamily: "AmaticBold",
+                color: Colors.bronze11,
+                fontSize: 26,
+              }}
+            >
+              quantité: (facultatif)
+            </Text>
+            <TextInput
+              style={{
+                height: 40,
+                borderColor: Colors.bronze8,
+                borderWidth: 1,
+                marginTop: 5,
+                marginBottom: 50,
+                borderRadius: 10,
+                backgroundColor: Colors.bronze5,
+                color: Colors.bronze12,
+              }}
+              onChangeText={(text) =>
+                setNewItem({ ...newItem, quantity: text })
+              }
+              value={newItem.quantity}
+            />
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <TouchableOpacity
+                onPress={handleAddItem}
+                style={{
+                  backgroundColor: Colors.bronze9,
+                  borderRadius: 5,
+                  padding: 15,
+                  margin: 30,
+                  width: 100,
+                  alignItems: "center",
+                }}
+              >
+                <AntDesign name="check" size={30} color={Colors.bronze12} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={{
+                  padding: 15,
+                  margin: 30,
+                  width: 100,
+                  backgroundColor: Colors.bronze8,
+                  alignItems: "center",
+                  borderRadius: 5,
+                }}
+              >
+                <Entypo name="cross" size={30} color={Colors.bronze12} />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-      <TouchableOpacity
-        style={styles.deleteAllItem}
-        onPress={() => setModalDeleteAll(true)}
-      >
-        <Text style={styles.textItemDelete}>Supprimer tous les produits</Text>
-        <Entypo name="trash" size={24} color="darkred" />
-      </TouchableOpacity>
+        </Modal>
+        <TouchableOpacity
+          style={styles.deleteAllItem}
+          onPress={() => setModalDeleteAll(true)}
+        >
+          <Text style={styles.textItemDelete}>Tous les produits</Text>
+          <Entypo name="trash" size={24} color="darkred" />
+        </TouchableOpacity>
+      </View>
       <Modal animationType="slide" transparent={true} visible={modalDeleteAll}>
         <View
           style={{
@@ -569,6 +572,6 @@ export default function ListItem({ list }: ListItemProps) {
           </TouchableOpacity>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 }
